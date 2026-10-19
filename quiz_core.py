@@ -2,6 +2,11 @@
 from __future__ import annotations
 
 import csv
+import base64
+import hashlib
+import hmac
+import secrets
+import zipfile
 import io
 import json
 import random
@@ -13,6 +18,8 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+
+import cloud_storage as cloud
 
 ROOT = Path(__file__).resolve().parent
 PACK_DIR = ROOT / 'packs'
@@ -74,16 +81,30 @@ def validate_pack(pack: Any) -> None:
                     raise ValueError(f'{item["id"]}: samples must be a list.')
 
 
-def load_packs() -> dict[str,dict]:
+def load_packs() -> dict[str, dict]:
+    """Read bundled and persisted packs, requiring unique IDs across all lectures."""
     PACK_DIR.mkdir(parents=True, exist_ok=True)
     loaded = {}
     ids = set()
-    for filename in sorted(PACK_DIR.glob('*.json')):
-        pack = json.loads(filename.read_text(encoding='utf-8'))
+    files = [json.loads(p.read_text(encoding='utf-8')) for p in sorted(PACK_DIR.glob('*.json'))]
+    if cloud.is_cloud():
+        with db() as con:
+            hosted = [json.loads(row['body']) for row in con.execute('SELECT body FROM uploaded_packs ORDER BY pack_id').fetchall()]
+        installed = {pack['pack_id']: pack for pack in files}
+        for pack in hosted:
+            original = installed.get(pack['pack_id'])
+            if original is not None:
+                # If an uploaded pack was later committed to GitHub with the same
+                # contents, use its Git copy and don't double-register the lecture.
+                if json.dumps(original, sort_keys=True) != json.dumps(pack, sort_keys=True):
+                    raise ValueError(f'Cloud pack {pack["pack_id"]} conflicts with the bundled pack. Keep a single definition.')
+                continue
+            files.append(pack)
+    for pack in files:
         validate_pack(pack)
         if pack['pack_id'] in loaded:
             raise ValueError(f'Duplicate pack_id: {pack["pack_id"]}')
-        for q in pack.get('questions',[]) + pack.get('challenges',[]):
+        for q in pack.get('questions', []) + pack.get('challenges', []):
             if q['id'] in ids:
                 raise ValueError(f'Question ID {q["id"]} exists in multiple packs.')
             ids.add(q['id'])
@@ -102,31 +123,48 @@ def import_pack(raw: bytes) -> str:
     existing = load_packs()
     if pack['pack_id'] in existing:
         raise ValueError('This pack ID already exists. Give the new PDF a unique pack_id.')
-    old_ids = {q['id'] for old in existing.values() for q in old.get('questions',[]) + old.get('challenges',[])}
-    new_ids = {q['id'] for q in pack.get('questions',[]) + pack.get('challenges',[])}
+    old_ids = {q['id'] for old in existing.values() for q in old.get('questions', []) + old.get('challenges', [])}
+    new_ids = {q['id'] for q in pack.get('questions', []) + pack.get('challenges', [])}
     duplicated = old_ids.intersection(new_ids)
     if duplicated:
         raise ValueError('Question IDs must be unique across lectures: ' + ', '.join(sorted(duplicated)[:5]))
+    if cloud.is_cloud():
+        with db() as con:
+            con.execute('INSERT INTO uploaded_packs (pack_id,body,created_at) VALUES (?,?,?)',
+                        (pack['pack_id'], raw.decode('utf-8'), now()))
+        return 'Cloud library: ' + pack['pack_id']
     target = PACK_DIR / ('import_' + pack['pack_id'] + '.json')
-    target.write_text(json.dumps(pack,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    target.write_text(json.dumps(pack, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     return str(target)
 
 
 @contextmanager
 def db(database: Path | str = DEFAULT_DB):
+    if database == DEFAULT_DB and cloud.is_cloud():
+        with cloud.connection() as con:
+            yield con
+        return
     path = Path(database)
-    path.parent.mkdir(parents=True,exist_ok=True)
-    con = sqlite3.connect(str(path),timeout=30)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    con = sqlite3.connect(str(path), timeout=30)
     con.row_factory = sqlite3.Row
     con.execute('PRAGMA busy_timeout=30000')
     try:
         yield con
         con.commit()
+    except BaseException:
+        con.rollback()
+        raise
     finally:
         con.close()
 
 
 def init_db(database: Path | str = DEFAULT_DB) -> None:
+    if database == DEFAULT_DB and cloud.is_cloud():
+        with db() as con:
+            con.executescript(cloud.PG_SCHEMA)
+            con.execute('INSERT INTO schema_migrations(version,applied_at) VALUES (?,?) ON CONFLICT(version) DO NOTHING', (1, now()))
+        return
     with db(database) as con:
         con.executescript('''
         CREATE TABLE IF NOT EXISTS sessions (
@@ -183,6 +221,16 @@ def init_db(database: Path | str = DEFAULT_DB) -> None:
             updated_at TEXT NOT NULL,
             PRIMARY KEY(profile,question_id)
         );
+        CREATE TABLE IF NOT EXISTS users (
+            username TEXT PRIMARY KEY,
+            password_hash TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS uploaded_packs (
+            pack_id TEXT PRIMARY KEY,
+            body TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        );
         ''')
 
 
@@ -209,7 +257,7 @@ def get_session(profile: str, sid: str, database: Path | str = DEFAULT_DB) -> di
 
 
 def recent_sessions(profile: str, limit=12, unfinished=False, database: Path | str = DEFAULT_DB) -> list[dict]:
-    sql='SELECT * FROM sessions WHERE profile=? AND kind="mcq"'
+    sql="SELECT * FROM sessions WHERE profile=? AND kind='mcq'"
     if unfinished:
         sql+=' AND completed_at IS NULL'
     sql+=' ORDER BY created_at DESC LIMIT ?'
@@ -266,9 +314,9 @@ def save_answer(profile: str, sid: str, question: dict, answer_index: int,
         return False
     correct=answer_index==question['answer']
     with db(database) as con:
-        cur=con.execute('''INSERT OR IGNORE INTO attempts
+        cur=con.execute('''INSERT INTO attempts
            (profile,session_id,question_id,kind,answer_index,correct,created_at)
-           VALUES (?,?,?,?,?,?,?)''',
+           VALUES (?,?,?,?,?,?,?) ON CONFLICT(profile,session_id,question_id) DO NOTHING''',
            (profile,sid,question['id'],'mcq',answer_index,int(correct),now()))
         if cur.rowcount:
             update_mastery(con,profile,question['id'],correct)
@@ -302,7 +350,7 @@ def bookmarked_ids(profile: str, database: Path | str = DEFAULT_DB) -> set[str]:
 def bookmark(profile: str, qid: str, save: bool, database: Path | str = DEFAULT_DB) -> None:
     with db(database) as con:
         if save:
-            con.execute('INSERT OR IGNORE INTO bookmarks VALUES (?,?,?)',(profile,qid,now()))
+            con.execute('INSERT INTO bookmarks (profile,question_id,created_at) VALUES (?,?,?) ON CONFLICT(profile,question_id) DO NOTHING',(profile,qid,now()))
         else:
             con.execute('DELETE FROM bookmarks WHERE profile=? AND question_id=?',(profile,qid))
 
@@ -387,3 +435,93 @@ def attempts_csv(profile: str, database: Path | str = DEFAULT_DB) -> bytes:
     for r in rows:
         writer.writerow({k:r.get(k) for k in writer.fieldnames})
     return f.getvalue().encode('utf-8-sig')
+
+# ---------------- Cloud user accounts and full history export -----------------
+USERNAME_RE = re.compile(r'[a-z][a-z0-9_.-]{2,29}\Z')
+EXPORT_TABLES = ('sessions', 'attempts', 'mastery', 'bookmarks', 'personal_notes', 'code_drafts')
+
+
+def normalize_username(value: str) -> str:
+    result = value.strip().lower()
+    if not USERNAME_RE.fullmatch(result):
+        raise ValueError('Username must be 3–30 characters: lowercase letters, numbers, _, . or -, starting with a letter.')
+    return result
+
+
+def make_password_hash(password: str) -> str:
+    if len(password) < 10 or len(password) > 200:
+        raise ValueError('Password must be 10–200 characters.')
+    salt = secrets.token_bytes(16)
+    digest = hashlib.scrypt(password.encode('utf-8'), salt=salt, n=2**14, r=8, p=1)
+    return 'scrypt$16384$8$1$' + base64.b64encode(salt).decode() + '$' + base64.b64encode(digest).decode()
+
+
+def verify_password(password: str, encoded: str) -> bool:
+    try:
+        algo, n, r, p, salt, expected = encoded.split('$')
+        if algo != 'scrypt' or (int(n), int(r), int(p)) != (16384, 8, 1):
+            return False
+        digest = hashlib.scrypt(password.encode('utf-8'), salt=base64.b64decode(salt),
+                                n=int(n), r=int(r), p=int(p))
+        return hmac.compare_digest(digest, base64.b64decode(expected))
+    except (ValueError, TypeError, UnicodeError):
+        return False
+
+
+def register_user(username: str, password: str, database: Path | str = DEFAULT_DB) -> str:
+    username = normalize_username(username)
+    password_hash = make_password_hash(password)
+    with db(database) as con:
+        result = con.execute('INSERT INTO users (username,password_hash,created_at) VALUES (?,?,?) ON CONFLICT(username) DO NOTHING',
+                             (username, password_hash, now()))
+    if not result.rowcount:
+        raise ValueError('This username is already registered.')
+    return username
+
+
+def authenticate_user(username: str, password: str, database: Path | str = DEFAULT_DB) -> str | None:
+    try:
+        username = normalize_username(username)
+    except ValueError:
+        return None
+    with db(database) as con:
+        row = con.execute('SELECT password_hash FROM users WHERE username=?', (username,)).fetchone()
+    # Same expensive hash operation for absent users to reduce username enumeration.
+    if row is None:
+        make_password_hash('dummy-password-not-reused')
+        return None
+    return username if verify_password(password, row['password_hash']) else None
+
+
+def reset_user_password(username: str, password: str, database: Path | str = DEFAULT_DB) -> None:
+    username = normalize_username(username)
+    hashed = make_password_hash(password)
+    with db(database) as con:
+        cur = con.execute('UPDATE users SET password_hash=? WHERE username=?',(hashed,username))
+        if not cur.rowcount:
+            raise ValueError('User does not exist.')
+
+
+def user_exists(username: str, database: Path | str = DEFAULT_DB) -> bool:
+    username = normalize_username(username)
+    with db(database) as con:
+        return con.execute('SELECT 1 FROM users WHERE username=?', (username,)).fetchone() is not None
+
+
+def export_all_progress(profile: str, database: Path | str = DEFAULT_DB) -> bytes:
+    """Complete per-user backup, including notes, drafts, mastery, and sessions.
+
+    Do not expose this ZIP to other users: its content is sensitive study history.
+    """
+    payload = {'format': 'python_mastery_backup_v1', 'user': profile, 'exported_at_utc': now(), 'tables': {}}
+    with db(database) as con:
+        for table in EXPORT_TABLES:  # constants, not untrusted SQL identifiers
+            rows = con.execute(f'SELECT * FROM {table} WHERE profile=?', (profile,)).fetchall()
+            payload['tables'][table] = [dict(row) for row in rows]
+    if database == DEFAULT_DB and cloud.is_cloud():
+        with db() as con:
+            payload['uploaded_packs'] = [dict(row) for row in con.execute('SELECT pack_id,body,created_at FROM uploaded_packs').fetchall()]
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, mode='w', compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr('my_progress.json', json.dumps(payload, indent=2, ensure_ascii=False))
+    return output.getvalue()

@@ -10,6 +10,8 @@ import json
 import csv
 import io
 import sqlite3
+import os
+import hmac
 import tempfile
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
@@ -19,15 +21,29 @@ from pathlib import Path
 import streamlit as st
 import quiz_core as core
 from ui_style import svg_icon, style
+import cloud_storage as cloud
 
 st.set_page_config(
     page_title="Python Mastery Lab · Study Workspace",
     page_icon="🐍",
     layout="wide",
     initial_sidebar_state="expanded",
-    menu_items={"About": "Your local, persistent Python practice workspace."},
+    menu_items={"About": "Python Mastery Lab: local practice or password-protected cloud progress."},
 )
-core.init_db()
+def secret_value(key: str) -> str:
+    """Read Streamlit cloud/local secret or environment without exposing it."""
+    try:
+        return str(st.secrets.get(key) or os.environ.get(key) or "")
+    except (FileNotFoundError, AttributeError, KeyError):
+        return str(os.environ.get(key, ""))
+
+
+cloud.configure(secret_value("DATABASE_URL"))
+try:
+    core.init_db()
+except Exception:
+    st.error("Cannot connect to your progress database. Check the DATABASE_URL secret, database status, and connection settings.")
+    st.stop()
 try:
     PACKS = core.load_packs()
 except (ValueError, OSError, json.JSONDecodeError) as exc:
@@ -148,6 +164,53 @@ def go_to(page: str) -> None:
     st.rerun()
 
 
+def cloud_login() -> str:
+    """Require a password on every new browser session, isolate each learner."""
+    if not cloud.is_cloud():
+        return ""
+    username = st.session_state.get("cloud_username")
+    if username:
+        return username
+
+    hero("Private learning / Account", "Welcome back", "Sign in to access your personal sessions, notes and revision history. Your progress is stored securely in PostgreSQL.")
+    tab_login, tab_create = st.tabs(["Sign in", "Create an account"])
+    with tab_login:
+        with st.form("cloud_signin", clear_on_submit=True):
+            user = st.text_input("Username", key="signin_username", max_chars=30)
+            password = st.text_input("Password", type="password", key="signin_password")
+            submitted = st.form_submit_button("Sign in", type="primary", use_container_width=True)
+        if submitted:
+            if core.authenticate_user(user, password):
+                st.session_state["cloud_username"] = core.normalize_username(user)
+                st.rerun()
+            else:
+                st.error("Incorrect username or password.")
+    with tab_create:
+        if not secret_value("REGISTRATION_CODE"):
+            st.info("New accounts are invite-only. Ask the app owner to create your account.")
+        else:
+            with st.form("cloud_signup", clear_on_submit=True):
+                new_user = st.text_input("Choose a username (3–30 characters)")
+                new_password = st.text_input("New password (at least 10 characters)", type="password")
+                repeated = st.text_input("Confirm password", type="password")
+                invite = st.text_input("Private invitation code", type="password")
+                sign_up = st.form_submit_button("Create account", type="primary", use_container_width=True)
+            if sign_up:
+                if not hmac.compare_digest(invite, secret_value("REGISTRATION_CODE")):
+                    st.error("Invalid invitation code.")
+                elif new_password != repeated:
+                    st.error("Passwords don't match.")
+                else:
+                    try:
+                        st.session_state["cloud_username"] = core.register_user(new_user, new_password)
+                        st.success("Account created. Opening your workspace.")
+                        st.rerun()
+                    except ValueError as exc:
+                        st.error(str(exc))
+    st.caption("Passwords are hashed before storage. Login is required again after a full browser refresh for security.")
+    st.stop()
+
+
 def start_session(profile: str, qs: list[dict], mode: str, size: int, filters: dict | None = None) -> bool:
     ids = core.select_questions(qs, profile, min(size, len(qs)), mode)
     if not ids:
@@ -202,7 +265,7 @@ def quiz_session(profile: str, sid: str) -> None:
         answers = [core.get_answer(profile, sid, qid) for qid in queue]
         answered = sum(a is not None for a in answers)
         right = sum(bool(a and a["correct"]) for a in answers)
-        hero("Session finished · Saved to your history", "Nice work — session complete!", "Your attempts, explanations and revision schedule are saved on this computer.")
+        hero("Session finished · Saved to your history", "Nice work — session complete!", "Your attempts, explanations and revision schedule are saved to your account.")
         x, y, z = st.columns(3)
         x.metric("Questions answered", f"{answered}/{len(queue)}")
         y.metric("Correct responses", right)
@@ -607,19 +670,27 @@ def progress_page(profile: str) -> None:
                     "Status": "Finished" if s["completed_at"] else "In progress"} for s in sessions])
     else:
         st.caption("No saved sessions yet.")
-    section("Export & backup", "Keep your history when moving computers or replacing app files.")
+    section("Export & backup", "Download a private copy of your complete study history, including answers, notes and drafts.")
     left, right = st.columns(2)
     with left:
         st.download_button("Export attempts (CSV)", data=attempts_export_ist(profile),
                            file_name=f'python_attempts_{profile.replace(" ", "_")}.csv',
                            mime="text/csv", use_container_width=True)
     with right:
-        dbfile = core.DEFAULT_DB
-        if dbfile.exists():
-            st.download_button("Download progress database", data=consistent_db_backup(),
-                               file_name="python_mastery_progress.sqlite3",
-                               mime="application/octet-stream", use_container_width=True)
-    st.caption("All times shown in this app use Indian Standard Time (IST, UTC+05:30). The database keeps UTC timestamps for accurate scheduling. Keep data/progress.sqlite3 when updating.")
+        if cloud.is_cloud():
+            st.download_button("Download full progress backup (ZIP)", data=core.export_all_progress(profile),
+                               file_name=f'python_mastery_{profile}_backup.zip',
+                               mime="application/zip", use_container_width=True)
+        else:
+            dbfile = core.DEFAULT_DB
+            if dbfile.exists():
+                st.download_button("Download progress database", data=consistent_db_backup(),
+                                   file_name="python_mastery_progress.sqlite3",
+                                   mime="application/octet-stream", use_container_width=True)
+    if cloud.is_cloud():
+        st.caption("Your study progress and imported lecture packs are stored in hosted PostgreSQL, independently from app deployments. Save an offline backup periodically. All displayed timestamps use IST (UTC+05:30).")
+    else:
+        st.caption("Offline mode: saved progress is in data/progress.sqlite3 on this computer, not on Streamlit Cloud. All displayed timestamps use IST (UTC+05:30).")
 
 
 def packs_page(profile: str) -> None:
@@ -639,7 +710,7 @@ def packs_page(profile: str) -> None:
         if st.button("Validate & import lecture", type="primary"):
             try:
                 dest = core.import_pack(uploaded.getvalue())
-                st.success(f"Imported {Path(dest).name}. Your earlier progress remains intact.")
+                st.success(f"Imported {dest}. Your earlier progress remains intact.")
                 st.rerun()
             except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
                 st.error(str(exc))
@@ -669,10 +740,21 @@ def sidebar() -> tuple[str, str]:
             '<div class="brand-caption">YOUR STUDY WORKSPACE</div></div></div>',
             unsafe_allow_html=True,
         )
-        profile = st.text_input(
-            "Learner profile", value="My Python practice", max_chars=60,
-            help="Use the same profile name to reopen your saved questions and history.",
-        ).strip() or "My Python practice"
+        if cloud.is_cloud():
+            profile = st.session_state["cloud_username"]
+            st.caption("Signed in: " + profile)
+            if st.button("Sign out", use_container_width=True):
+                current_theme = st.session_state.get("dark_mode", False)
+                for key in list(st.session_state.keys()):
+                    del st.session_state[key]
+                st.session_state["dark_mode"] = current_theme
+                st.rerun()
+        else:
+            profile = st.text_input(
+                "Learner profile", value="My Python practice", max_chars=60,
+                help="Offline-only profile. Enable cloud DATABASE_URL for protected online accounts.",
+            ).strip() or "My Python practice"
+            st.warning("Offline SQLite mode. Online persistence requires DATABASE_URL.", icon="⚠️")
         st.markdown('<div class="brand-caption" style="margin:19px 0 11px">EXPLORE</div>', unsafe_allow_html=True)
         if st.session_state.get("current_page") not in {id_ for id_, _ in PAGES}:
             requested = str(st.query_params.get("page", "home"))
@@ -691,8 +773,8 @@ def sidebar() -> tuple[str, str]:
             f'<div style="margin-top:7px"><span>{brief["due"]} due · {brief["missed"]} need practice</span></div></div>',
             unsafe_allow_html=True,
         )
-        st.markdown('<div class="sidebar-small" style="margin-top:16px">'
-                    'Your answers and notes stay on this computer. The native sidebar arrow in the top header can close or reopen this panel.</div>',
+        st.markdown('<div class="sidebar-small" style="margin-top:16px">' +
+                    ('Your answers and notes are saved to your cloud account.' if cloud.is_cloud() else 'Offline data is stored on this computer.') + ' The top Menu always remains available.</div>',
                     unsafe_allow_html=True)
     return profile, st.session_state["current_page"]
 
@@ -718,6 +800,8 @@ def top_toolbar() -> None:
                   help="Switch the complete interface between light and dark mode. Your choice stays in the page URL after refresh.")
 
 
+if cloud.is_cloud():
+    cloud_login()
 profile, page = sidebar()
 top_toolbar()
 if page == "home":
