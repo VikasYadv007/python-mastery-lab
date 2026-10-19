@@ -1,4 +1,4 @@
-# Python Mastery Lab — v3 Modern UI
+# Python Mastery Lab
 
 **Upgrade existing installations:** Use the UI-only ZIP and follow [UI_UPGRADE_GUIDE.md](UI_UPGRADE_GUIDE.md). Copy `app.py`, **new** `ui_style.py`, and `.streamlit/config.toml` only; preserve `data/progress.sqlite3`, question packs, and `quiz_core.py`.
 
