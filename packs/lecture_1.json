@@ -1,0 +1,5160 @@
+{
+  "schema_version": 1,
+  "pack_id": "lecture-1",
+  "title": "Python Basics — Lecture 1",
+  "description": "A question bank based on the uploaded 12-page lecture notes, plus explicitly tagged interview-style extensions.",
+  "origin": "Apna College — Python Notes (Lecture 1), uploaded PDF",
+  "topics": [
+    {
+      "id": "programming",
+      "name": "Programming and translators",
+      "first_page": 1
+    },
+    {
+      "id": "python",
+      "name": "What is Python?",
+      "first_page": 1
+    },
+    {
+      "id": "print",
+      "name": "Printing and output",
+      "first_page": 1
+    },
+    {
+      "id": "charset",
+      "name": "Characters and Unicode",
+      "first_page": 2
+    },
+    {
+      "id": "variables",
+      "name": "Variables and assignment",
+      "first_page": 2
+    },
+    {
+      "id": "identifiers",
+      "name": "Identifier rules",
+      "first_page": 3
+    },
+    {
+      "id": "types",
+      "name": "Data types and type()",
+      "first_page": 3
+    },
+    {
+      "id": "keywords",
+      "name": "Keywords",
+      "first_page": 4
+    },
+    {
+      "id": "calculations",
+      "name": "Simple calculations",
+      "first_page": 5
+    },
+    {
+      "id": "comments",
+      "name": "Comments and docstrings",
+      "first_page": 5
+    },
+    {
+      "id": "operators",
+      "name": "Operators",
+      "first_page": 6
+    },
+    {
+      "id": "conversion",
+      "name": "Implicit conversion",
+      "first_page": 8
+    },
+    {
+      "id": "casting",
+      "name": "Explicit casting",
+      "first_page": 8
+    },
+    {
+      "id": "input",
+      "name": "User input and practice",
+      "first_page": 10
+    }
+  ],
+  "questions": [
+    {
+      "id": "L1-M001",
+      "type": "mcq",
+      "topic": "programming",
+      "difficulty": "Beginner",
+      "prompt": "What is programming?",
+      "code": "",
+      "options": [
+        "Writing instructions that a computer can execute",
+        "Building only websites",
+        "Manufacturing computer hardware",
+        "Converting electricity to text"
+      ],
+      "answer": 0,
+      "explanation": "Programming means specifying instructions to perform tasks. The instructions may be written in a language like Python.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M002",
+      "type": "mcq",
+      "topic": "programming",
+      "difficulty": "Beginner",
+      "prompt": "Which representation is ultimately understood by a processor?",
+      "code": "",
+      "options": [
+        "Python source code",
+        "Machine instructions",
+        "English sentences",
+        "Only decimal numbers"
+      ],
+      "answer": 1,
+      "explanation": "At the hardware level, processors execute machine instructions, commonly described using bits (0 and 1).",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M003",
+      "type": "mcq",
+      "topic": "programming",
+      "difficulty": "Beginner",
+      "prompt": "In the lecture’s introductory model, what does a compiler do?",
+      "code": "",
+      "options": [
+        "Runs each statement as soon as it is typed",
+        "Translates the whole program before running it",
+        "Only checks spelling",
+        "Accepts keyboard input"
+      ],
+      "answer": 1,
+      "explanation": "The lecture contrasts whole-program compilation with step-by-step interpretation. Real compiler/runtime pipelines can be more nuanced.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M004",
+      "type": "mcq",
+      "topic": "programming",
+      "difficulty": "Beginner",
+      "prompt": "According to the lecture, Python primarily uses which execution approach?",
+      "code": "",
+      "options": [
+        "Interpreted execution",
+        "Assembly-only execution",
+        "HTML rendering",
+        "Database query processing"
+      ],
+      "answer": 0,
+      "explanation": "The notes introduce Python as interpreted; typical CPython also compiles Python source to bytecode first.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M005",
+      "type": "mcq",
+      "topic": "programming",
+      "difficulty": "Intermediate",
+      "prompt": "Which sequence best matches the simplified programming diagram on page 1?",
+      "code": "",
+      "options": [
+        "Translator → code → instructions",
+        "Your code → translator → machine code",
+        "Machine code → keyboard → Python",
+        "RAM → mouse → source code"
+      ],
+      "answer": 1,
+      "explanation": "The slide presents your source code passing through a translator so the computer can execute it.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M006",
+      "type": "mcq",
+      "topic": "programming",
+      "difficulty": "Advanced",
+      "prompt": "Which statement about CPython is more technically precise than “Python never compiles”?",
+      "code": "",
+      "options": [
+        "CPython commonly compiles source to bytecode before executing it on a virtual machine",
+        "CPython produces a native executable for every script automatically",
+        "Python cannot produce bytecode",
+        "Python statements can never be parsed"
+      ],
+      "answer": 0,
+      "explanation": "CPython normally compiles modules to Python bytecode for evaluation; the lecture’s interpreter comparison is a teaching simplification.",
+      "source": "extension",
+      "pages": [
+        1
+      ],
+      "tags": [
+        "interview",
+        "nuance"
+      ]
+    },
+    {
+      "id": "L1-M007",
+      "type": "mcq",
+      "topic": "programming",
+      "difficulty": "Intermediate",
+      "prompt": "Which tool actually explains how to fix a syntax error?",
+      "code": "",
+      "options": [
+        "A program translator/runtime reports the error",
+        "The screen brightness setting",
+        "The file icon",
+        "Only the operating system bootloader"
+      ],
+      "answer": 0,
+      "explanation": "A parser/interpreter catches invalid Python syntax and reports an error; the programmer then fixes the code.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M008",
+      "type": "mcq",
+      "topic": "programming",
+      "difficulty": "Advanced",
+      "prompt": "What happens to a Python file containing invalid syntax before execution begins in normal CPython module execution?",
+      "code": "print(\"first\")\nprint(\"oops\"",
+      "options": [
+        "Statements before the error always run",
+        "The file cannot be compiled, so no top-level statements in that module execute",
+        "Only the invalid line is ignored",
+        "Python automatically repairs it"
+      ],
+      "answer": 1,
+      "explanation": "The module is compiled before its top-level code is executed; SyntaxError prevents module execution. This refines the line-by-line simplification.",
+      "source": "extension",
+      "pages": [
+        1
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M009",
+      "type": "mcq",
+      "topic": "python",
+      "difficulty": "Beginner",
+      "prompt": "Who developed Python?",
+      "code": "",
+      "options": [
+        "Dennis Ritchie",
+        "Guido van Rossum",
+        "James Gosling",
+        "Bjarne Stroustrup"
+      ],
+      "answer": 1,
+      "explanation": "Guido van Rossum created Python.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M010",
+      "type": "mcq",
+      "topic": "python",
+      "difficulty": "Beginner",
+      "prompt": "What does “high-level language” mean in the context of the notes?",
+      "code": "",
+      "options": [
+        "You must manually control each CPU register",
+        "It abstracts many low-level hardware and memory details",
+        "It requires a supercomputer",
+        "It does not support numbers"
+      ],
+      "answer": 1,
+      "explanation": "High-level code lets programmers focus on algorithms rather than most machine-specific details.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M011",
+      "type": "mcq",
+      "topic": "python",
+      "difficulty": "Beginner",
+      "prompt": "Which operating systems are explicitly mentioned as Python targets?",
+      "code": "",
+      "options": [
+        "Windows, macOS and Linux",
+        "Only Windows",
+        "Only Linux and Android",
+        "Only macOS"
+      ],
+      "answer": 0,
+      "explanation": "The notes call Python portable across Windows, macOS and Linux.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M012",
+      "type": "mcq",
+      "topic": "python",
+      "difficulty": "Beginner",
+      "prompt": "Which statement about Python licensing is correct?",
+      "code": "",
+      "options": [
+        "It is free and open source",
+        "Every use requires a license fee",
+        "It cannot be inspected",
+        "It is an operating system"
+      ],
+      "answer": 0,
+      "explanation": "The notes describe Python as free and open source.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M013",
+      "type": "mcq",
+      "topic": "python",
+      "difficulty": "Intermediate",
+      "prompt": "What is a benefit of Python’s readable syntax?",
+      "code": "",
+      "options": [
+        "It removes all programming errors",
+        "It can make programs easier to read and learn",
+        "It guarantees programs run fastest",
+        "It converts every string to a number"
+      ],
+      "answer": 1,
+      "explanation": "Readability helps people learn and maintain code; it does not eliminate bugs.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M014",
+      "type": "mcq",
+      "topic": "python",
+      "difficulty": "Advanced",
+      "prompt": "Does “portable” guarantee a Python program behaves identically on every computer?",
+      "code": "",
+      "options": [
+        "Yes, including filesystem paths and installed packages",
+        "No; platform APIs, installed packages and environmental details can still differ",
+        "Only if all variables are integers",
+        "Yes, even without a Python interpreter"
+      ],
+      "answer": 1,
+      "explanation": "Many programs are portable, but external dependencies, paths and OS-specific APIs can affect behavior.",
+      "source": "extension",
+      "pages": [
+        1
+      ],
+      "tags": [
+        "practical"
+      ]
+    },
+    {
+      "id": "L1-M015",
+      "type": "mcq",
+      "topic": "python",
+      "difficulty": "Advanced",
+      "prompt": "Which statement about memory in Python is accurate?",
+      "code": "",
+      "options": [
+        "Python programmers never use memory",
+        "Python manages most memory automatically, although programs still consume memory",
+        "All Python objects are stored permanently",
+        "Python has no object references"
+      ],
+      "answer": 1,
+      "explanation": "Python abstracts manual allocation for everyday code but still creates and holds objects in memory.",
+      "source": "extension",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M016",
+      "type": "mcq",
+      "topic": "print",
+      "difficulty": "Beginner",
+      "prompt": "What is the output of this code?",
+      "code": "print(\"Hello World\")",
+      "options": [
+        "Hello World",
+        "\"Hello World\"",
+        "print(\"Hello World\")",
+        "Error"
+      ],
+      "answer": 0,
+      "explanation": "The quotes delimit a string literal; print outputs its contents.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M017",
+      "type": "mcq",
+      "topic": "print",
+      "difficulty": "Beginner",
+      "prompt": "What is printed?",
+      "code": "print(10 + 5)",
+      "options": [
+        "10 + 5",
+        "15",
+        "105",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "The arithmetic expression is evaluated before print displays it.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M018",
+      "type": "mcq",
+      "topic": "print",
+      "difficulty": "Beginner",
+      "prompt": "What is the output?",
+      "code": "print(\"Python\", \"is\", \"fun\")",
+      "options": [
+        "Pythonisfun",
+        "Python is fun",
+        "Python, is, fun",
+        "[Python is fun]"
+      ],
+      "answer": 1,
+      "explanation": "By default print separates comma-separated arguments with a space.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M019",
+      "type": "mcq",
+      "topic": "print",
+      "difficulty": "Intermediate",
+      "prompt": "Which line correctly prints the numeric value 23 without using a string?",
+      "code": "",
+      "options": [
+        "print(23)",
+        "print(\"23)",
+        "# print(23)",
+        "print = 23"
+      ],
+      "answer": 0,
+      "explanation": "print(23) displays the integer. The second option is unclosed, the third is a comment, and the fourth assigns a new variable.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M020",
+      "type": "mcq",
+      "topic": "print",
+      "difficulty": "Intermediate",
+      "prompt": "What is the default separator between multiple print arguments?",
+      "code": "print(\"A\", \"B\")",
+      "options": [
+        "A comma",
+        "One space",
+        "A newline",
+        "No separator"
+      ],
+      "answer": 1,
+      "explanation": "The sep parameter defaults to one space.",
+      "source": "extension",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M021",
+      "type": "mcq",
+      "topic": "print",
+      "difficulty": "Intermediate",
+      "prompt": "What is printed?",
+      "code": "print(\"A\", \"B\", sep=\"-\")",
+      "options": [
+        "A-B",
+        "AB",
+        "A B",
+        "A,B"
+      ],
+      "answer": 0,
+      "explanation": "sep=\"-\" replaces the default separating space.",
+      "source": "extension",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M022",
+      "type": "mcq",
+      "topic": "print",
+      "difficulty": "Advanced",
+      "prompt": "How many lines of output does this produce?",
+      "code": "print(\"Hello\", end=\"\")\nprint(\"World\")",
+      "options": [
+        "One",
+        "Two",
+        "Three",
+        "None"
+      ],
+      "answer": 0,
+      "explanation": "end=\"\" suppresses the newline after the first print call.",
+      "source": "extension",
+      "pages": [
+        1
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M023",
+      "type": "mcq",
+      "topic": "print",
+      "difficulty": "Advanced",
+      "prompt": "What is the output?",
+      "code": "print([1, 2, 3])",
+      "options": [
+        "1 2 3",
+        "[1, 2, 3]",
+        "1,2,3",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "Passing one list object prints its string representation, including the brackets.",
+      "source": "extension",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M024",
+      "type": "mcq",
+      "topic": "print",
+      "difficulty": "Advanced",
+      "prompt": "What does print() return?",
+      "code": "x = print(\"Hi\")\nprint(x)",
+      "options": [
+        "The text printed",
+        "0",
+        "None",
+        "True"
+      ],
+      "answer": 2,
+      "explanation": "print writes to standard output and returns None.",
+      "source": "extension",
+      "pages": [
+        1
+      ],
+      "tags": [
+        "interview"
+      ]
+    },
+    {
+      "id": "L1-M025",
+      "type": "mcq",
+      "topic": "print",
+      "difficulty": "Intermediate",
+      "prompt": "When given a normal string, what does print do with quote marks used as delimiters?",
+      "code": "",
+      "options": [
+        "Prints both delimiting quotes",
+        "Omits the delimiting quotes",
+        "Converts the string into bytes",
+        "Always raises an error"
+      ],
+      "answer": 1,
+      "explanation": "Quotation marks identify source-code string literals but do not appear as part of the string value.",
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M026",
+      "type": "mcq",
+      "topic": "charset",
+      "difficulty": "Beginner",
+      "prompt": "Which list contains only Python character categories mentioned in the lecture?",
+      "code": "",
+      "options": [
+        "Letters, digits, special symbols, whitespace",
+        "Audio, pixels, video, fonts",
+        "RAM, ROM, cache, disks",
+        "Red, green, blue, alpha"
+      ],
+      "answer": 0,
+      "explanation": "The notes cover letters, digits, symbols, whitespace and Unicode characters.",
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M027",
+      "type": "mcq",
+      "topic": "charset",
+      "difficulty": "Beginner",
+      "prompt": "Which is a whitespace character?",
+      "code": "",
+      "options": [
+        "A tab",
+        "A plus sign",
+        "A digit",
+        "An underscore"
+      ],
+      "answer": 0,
+      "explanation": "Tabs and newlines are examples of whitespace.",
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M028",
+      "type": "mcq",
+      "topic": "charset",
+      "difficulty": "Beginner",
+      "prompt": "Which is a special symbol used in Python?",
+      "code": "",
+      "options": [
+        "%",
+        "🌍",
+        "é",
+        "Ω"
+      ],
+      "answer": 0,
+      "explanation": "The list on page 2 explicitly includes symbols such as +, -, *, / and %. Other symbols can be part of string data.",
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M029",
+      "type": "mcq",
+      "topic": "charset",
+      "difficulty": "Intermediate",
+      "prompt": "Can a Python string contain an emoji?",
+      "code": "",
+      "options": [
+        "No, Python only supports ASCII",
+        "Yes, strings can hold Unicode characters",
+        "Only inside comments",
+        "Only after calling int()"
+      ],
+      "answer": 1,
+      "explanation": "Python 3 text strings hold Unicode, so emoji and other non-ASCII characters are supported.",
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M030",
+      "type": "mcq",
+      "topic": "charset",
+      "difficulty": "Intermediate",
+      "prompt": "Which escape sequence normally represents a newline inside a Python string?",
+      "code": "print(\"A\\nB\")",
+      "options": [
+        "\\n",
+        "\\t",
+        "\\0",
+        "\\b"
+      ],
+      "answer": 0,
+      "explanation": "\\n represents the newline character inside an ordinary Python string.",
+      "source": "extension",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M031",
+      "type": "mcq",
+      "topic": "charset",
+      "difficulty": "Advanced",
+      "prompt": "Is the Unicode identifier café valid in Python 3?",
+      "code": "café = 7\nprint(café)",
+      "options": [
+        "No, identifiers are strictly ASCII",
+        "Yes, many Unicode letters are valid identifiers",
+        "Only as a string key",
+        "Only if written inside parentheses"
+      ],
+      "answer": 1,
+      "explanation": "Python 3 identifiers can include many Unicode letters; the basic ASCII-focused rules in the lecture are a simplified introduction.",
+      "source": "extension",
+      "pages": [
+        2
+      ],
+      "tags": [
+        "nuance"
+      ]
+    },
+    {
+      "id": "L1-M032",
+      "type": "mcq",
+      "topic": "charset",
+      "difficulty": "Advanced",
+      "prompt": "What is ord(\"A\")?",
+      "code": "print(ord(\"A\"))",
+      "options": [
+        "\"A\"",
+        "64",
+        "65",
+        "0x41"
+      ],
+      "answer": 2,
+      "explanation": "ord returns the Unicode code point as an integer. Capital A has code point 65.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M033",
+      "type": "mcq",
+      "topic": "variables",
+      "difficulty": "Beginner",
+      "prompt": "Which operator assigns a value to a name?",
+      "code": "",
+      "options": [
+        "==",
+        "=",
+        "!=",
+        ">="
+      ],
+      "answer": 1,
+      "explanation": "Single equals assigns a reference/value to a variable; == compares two values.",
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M034",
+      "type": "mcq",
+      "topic": "variables",
+      "difficulty": "Beginner",
+      "prompt": "What is printed?",
+      "code": "age = 23\nage = 24\nprint(age)",
+      "options": [
+        "23",
+        "24",
+        "23 24",
+        "Error"
+      ],
+      "answer": 1,
+      "explanation": "The second assignment updates age to 24.",
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M035",
+      "type": "mcq",
+      "topic": "variables",
+      "difficulty": "Beginner",
+      "prompt": "What is printed?",
+      "code": "x = 5\nprint(x)",
+      "options": [
+        "10",
+        "5",
+        "x",
+        "NameError"
+      ],
+      "answer": 1,
+      "explanation": "The variable x stores the value 5.",
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M036",
+      "type": "mcq",
+      "topic": "variables",
+      "difficulty": "Intermediate",
+      "prompt": "What is printed?",
+      "code": "x = 5\ny = x\nx = 8\nprint(x)",
+      "options": [
+        "5",
+        "8",
+        "13",
+        "NameError"
+      ],
+      "answer": 1,
+      "explanation": "y receives 5, then x changes independently to 8.",
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M037",
+      "type": "mcq",
+      "topic": "variables",
+      "difficulty": "Intermediate",
+      "prompt": "What does a name refer to in Python?",
+      "code": "",
+      "options": [
+        "A value/object, via a binding",
+        "A fixed physical RAM address visible to the programmer",
+        "Always a character array",
+        "A CPU register chosen by the user"
+      ],
+      "answer": 0,
+      "explanation": "At a conceptual level, assignment binds a name to an object; memory-location language in beginner notes is an analogy.",
+      "source": "extension",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M038",
+      "type": "mcq",
+      "topic": "variables",
+      "difficulty": "Intermediate",
+      "prompt": "What is the result?",
+      "code": "a = 1\nb = 2\na, b = b, a\nprint(a, b)",
+      "options": [
+        "2 1",
+        "1 2",
+        "2 2",
+        "SyntaxError"
+      ],
+      "answer": 0,
+      "explanation": "Tuple unpacking evaluates the right side before assigning both names.",
+      "source": "extension",
+      "pages": [
+        2
+      ],
+      "tags": [
+        "interview"
+      ]
+    },
+    {
+      "id": "L1-M039",
+      "type": "mcq",
+      "topic": "variables",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "a = 3\nb = a\na += 1\nprint(a)",
+      "options": [
+        "3",
+        "4",
+        "7",
+        "NameError"
+      ],
+      "answer": 1,
+      "explanation": "Both names initially reference the integer 3; a += 1 rebinds a to 4 rather than changing b.",
+      "source": "extension",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M040",
+      "type": "mcq",
+      "topic": "variables",
+      "difficulty": "Advanced",
+      "prompt": "Why is sum = 5 technically legal but generally discouraged?",
+      "code": "sum = 5\nprint(sum)",
+      "options": [
+        "sum is a reserved keyword",
+        "It shadows the built-in sum function",
+        "It permanently changes Python",
+        "Integers cannot be assigned"
+      ],
+      "answer": 1,
+      "explanation": "sum is the name of a built-in function, not a Python keyword. Reusing it as a variable shadows that built-in in the current scope.",
+      "source": "extension",
+      "pages": [
+        2
+      ],
+      "tags": [
+        "best-practice"
+      ]
+    },
+    {
+      "id": "L1-M041",
+      "type": "mcq",
+      "topic": "variables",
+      "difficulty": "Intermediate",
+      "prompt": "Which statement updates an already defined variable?",
+      "code": "",
+      "options": [
+        "value = 9",
+        "9 = value",
+        "value == 9",
+        "print = (value)"
+      ],
+      "answer": 0,
+      "explanation": "Assignments can rebind an existing variable; == is a comparison.",
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M042",
+      "type": "mcq",
+      "topic": "variables",
+      "difficulty": "Advanced",
+      "prompt": "Which expression raises a NameError?",
+      "code": "",
+      "options": [
+        "print(5)",
+        "print(missing_name)",
+        "print(\"missing_name\")",
+        "print(None)"
+      ],
+      "answer": 1,
+      "explanation": "Using a name that has not been defined in the current accessible scope raises NameError.",
+      "source": "extension",
+      "pages": [
+        2
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M043",
+      "type": "mcq",
+      "topic": "identifiers",
+      "difficulty": "Beginner",
+      "prompt": "Which is a valid variable name?",
+      "code": "",
+      "options": [
+        "2values",
+        "my-value",
+        "total_sum",
+        "my value"
+      ],
+      "answer": 2,
+      "explanation": "An underscore is allowed; spaces, hyphens and a starting digit are not.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M044",
+      "type": "mcq",
+      "topic": "identifiers",
+      "difficulty": "Beginner",
+      "prompt": "Can an identifier begin with a digit?",
+      "code": "",
+      "options": [
+        "Yes",
+        "No",
+        "Only if it has an underscore after the digit",
+        "Only inside functions"
+      ],
+      "answer": 1,
+      "explanation": "Names cannot begin with digits.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M045",
+      "type": "mcq",
+      "topic": "identifiers",
+      "difficulty": "Beginner",
+      "prompt": "How does Python treat score and Score?",
+      "code": "",
+      "options": [
+        "The same name",
+        "Two different names",
+        "Both invalid",
+        "Both keywords"
+      ],
+      "answer": 1,
+      "explanation": "Identifiers are case-sensitive.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M046",
+      "type": "mcq",
+      "topic": "identifiers",
+      "difficulty": "Beginner",
+      "prompt": "Which character is allowed in the middle of a normal identifier?",
+      "code": "",
+      "options": [
+        "@",
+        "-",
+        "_",
+        "#"
+      ],
+      "answer": 2,
+      "explanation": "The underscore is a valid character in an identifier.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M047",
+      "type": "mcq",
+      "topic": "identifiers",
+      "difficulty": "Intermediate",
+      "prompt": "Which statement causes a SyntaxError?",
+      "code": "",
+      "options": [
+        "_count = 3",
+        "total2 = 3",
+        "for = 3",
+        "Age = 3"
+      ],
+      "answer": 2,
+      "explanation": "for is a reserved keyword and cannot be assigned as a name.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M048",
+      "type": "mcq",
+      "topic": "identifiers",
+      "difficulty": "Intermediate",
+      "prompt": "Which name is valid?",
+      "code": "",
+      "options": [
+        "__secret",
+        "user@email",
+        "first.name",
+        "my cost"
+      ],
+      "answer": 0,
+      "explanation": "An identifier may begin with underscores; @, dots and spaces cannot be used in a single identifier.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M049",
+      "type": "mcq",
+      "topic": "identifiers",
+      "difficulty": "Intermediate",
+      "prompt": "Is myVariable_123 a valid identifier?",
+      "code": "",
+      "options": [
+        "Yes",
+        "No, it has an underscore",
+        "No, it has digits",
+        "No, mixed case is illegal"
+      ],
+      "answer": 0,
+      "explanation": "Letters, underscores and digits (not at the start) can be combined.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M050",
+      "type": "mcq",
+      "topic": "identifiers",
+      "difficulty": "Advanced",
+      "prompt": "Which standard-library function checks whether a string can be a Python identifier?",
+      "code": "print(\"total_1\".isidentifier())",
+      "options": [
+        "isidentifier()",
+        "isdigit()",
+        "identifier()",
+        "isvar()"
+      ],
+      "answer": 0,
+      "explanation": "str.isidentifier() recognizes identifier syntax, but it does not reject Python keywords.",
+      "source": "extension",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M051",
+      "type": "mcq",
+      "topic": "identifiers",
+      "difficulty": "Advanced",
+      "prompt": "What does this print?",
+      "code": "print(\"for\".isidentifier())",
+      "options": [
+        "False",
+        "True",
+        "SyntaxError",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "The method tests identifier *shape*; for is syntactically an identifier but is reserved as a keyword.",
+      "source": "extension",
+      "pages": [
+        3
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M052",
+      "type": "mcq",
+      "topic": "identifiers",
+      "difficulty": "Advanced",
+      "prompt": "Which test identifies reserved keywords reliably?",
+      "code": "import keyword\nprint(keyword.iskeyword(\"for\"))",
+      "options": [
+        "keyword.iskeyword(name)",
+        "str(name).isnumeric()",
+        "name.iskeyword()",
+        "type(name) == keyword"
+      ],
+      "answer": 0,
+      "explanation": "The keyword module provides iskeyword, used with a string name.",
+      "source": "extension",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M053",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Beginner",
+      "prompt": "What is the type of 42?",
+      "code": "",
+      "options": [
+        "str",
+        "float",
+        "int",
+        "bool"
+      ],
+      "answer": 2,
+      "explanation": "Whole-number literals such as 42 are integers.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M054",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Beginner",
+      "prompt": "What is the type of 3.14?",
+      "code": "",
+      "options": [
+        "float",
+        "str",
+        "int",
+        "NoneType"
+      ],
+      "answer": 0,
+      "explanation": "Decimal floating-point literals are float values.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M055",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Beginner",
+      "prompt": "What is the type of \"42\"?",
+      "code": "",
+      "options": [
+        "int",
+        "str",
+        "bool",
+        "float"
+      ],
+      "answer": 1,
+      "explanation": "Quotes make \"42\" text rather than a numeric integer.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M056",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Beginner",
+      "prompt": "Which are valid Boolean literals?",
+      "code": "",
+      "options": [
+        "true and false",
+        "TRUE and FALSE",
+        "True and False",
+        "1 and 0 only"
+      ],
+      "answer": 2,
+      "explanation": "Python’s Boolean literal spellings are True and False.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M057",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Beginner",
+      "prompt": "What does None represent?",
+      "code": "",
+      "options": [
+        "The number 0",
+        "No value / absent result",
+        "The text \"None\"",
+        "A syntax error"
+      ],
+      "answer": 1,
+      "explanation": "None is the singleton value representing absence of a value, and type(None) is NoneType.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M058",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Intermediate",
+      "prompt": "What does this print?",
+      "code": "print(type(10))",
+      "options": [
+        "<class 'int'>",
+        "<class 'str'>",
+        "<class 'float'>",
+        "<class 'bool'>"
+      ],
+      "answer": 0,
+      "explanation": "type(10) gives the int type object.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M059",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Intermediate",
+      "prompt": "What is the type of 2 + 3j?",
+      "code": "",
+      "options": [
+        "float",
+        "str",
+        "complex",
+        "int"
+      ],
+      "answer": 2,
+      "explanation": "The j suffix denotes an imaginary component; the literal yields a complex number.",
+      "source": "notes",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M060",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Intermediate",
+      "prompt": "What does type(None).__name__ return?",
+      "code": "print(type(None).__name__)",
+      "options": [
+        "\"None\"",
+        "\"NoneType\"",
+        "\"null\"",
+        "\"str\""
+      ],
+      "answer": 1,
+      "explanation": "None is an instance of the built-in NoneType.",
+      "source": "extension",
+      "pages": [
+        4
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M061",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Advanced",
+      "prompt": "Which statement is True?",
+      "code": "",
+      "options": [
+        "bool is a subclass of int in Python",
+        "True is a str",
+        "bool(True) is False",
+        "True has type float"
+      ],
+      "answer": 0,
+      "explanation": "For compatibility, bool subclasses int, so True behaves numerically like 1 in some arithmetic.",
+      "source": "extension",
+      "pages": [
+        3
+      ],
+      "tags": [
+        "interview"
+      ]
+    },
+    {
+      "id": "L1-M062",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(True + True)",
+      "options": [
+        "0",
+        "1",
+        "2",
+        "TypeError"
+      ],
+      "answer": 2,
+      "explanation": "True is numerically 1; adding two True values yields the integer 2.",
+      "source": "extension",
+      "pages": [
+        3
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M063",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(True == 1)",
+      "options": [
+        "True",
+        "False",
+        "TypeError",
+        "None"
+      ],
+      "answer": 0,
+      "explanation": "For number comparison, Boolean True equals integer 1.",
+      "source": "extension",
+      "pages": [
+        3
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M064",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Advanced",
+      "prompt": "Which expression is True?",
+      "code": "",
+      "options": [
+        "type(True) == int",
+        "isinstance(True, int)",
+        "type(None) == str",
+        "type(2.0) == int"
+      ],
+      "answer": 1,
+      "explanation": "bool subclasses int, so isinstance(True, int) is True; type(True) is bool.",
+      "source": "extension",
+      "pages": [
+        3
+      ],
+      "tags": [
+        "interview"
+      ]
+    },
+    {
+      "id": "L1-M065",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Intermediate",
+      "prompt": "What is the value of type(False).__name__?",
+      "code": "print(type(False).__name__)",
+      "options": [
+        "\"Boolean\"",
+        "\"bool\"",
+        "\"int\"",
+        "\"false\""
+      ],
+      "answer": 1,
+      "explanation": "The exact built-in type name is bool.",
+      "source": "notes",
+      "pages": [
+        4
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M066",
+      "type": "mcq",
+      "topic": "types",
+      "difficulty": "Advanced",
+      "prompt": "Which is the recommended test to check for absence of a value?",
+      "code": "",
+      "options": [
+        "x == \"None\"",
+        "x is None",
+        "type(x) == 0",
+        "x = None"
+      ],
+      "answer": 1,
+      "explanation": "None is a singleton; identity testing with is None is idiomatic.",
+      "source": "extension",
+      "pages": [
+        3
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M067",
+      "type": "mcq",
+      "topic": "keywords",
+      "difficulty": "Beginner",
+      "prompt": "What is a keyword?",
+      "code": "",
+      "options": [
+        "A valid filename",
+        "A reserved word with special language meaning",
+        "A library imported from pip",
+        "An optional whitespace character"
+      ],
+      "answer": 1,
+      "explanation": "Keywords are language-reserved and not valid variable names.",
+      "source": "notes",
+      "pages": [
+        4
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M068",
+      "type": "mcq",
+      "topic": "keywords",
+      "difficulty": "Beginner",
+      "prompt": "Which is a Python keyword?",
+      "code": "",
+      "options": [
+        "print",
+        "return",
+        "hello",
+        "sum"
+      ],
+      "answer": 1,
+      "explanation": "return is reserved; print and sum are built-ins but not keywords.",
+      "source": "notes",
+      "pages": [
+        4
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M069",
+      "type": "mcq",
+      "topic": "keywords",
+      "difficulty": "Beginner",
+      "prompt": "Which capitalization is correct for the Boolean keyword?",
+      "code": "",
+      "options": [
+        "true",
+        "TRUE",
+        "True",
+        "tRue"
+      ],
+      "answer": 2,
+      "explanation": "The Python literal is True with an uppercase T.",
+      "source": "notes",
+      "pages": [
+        4
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M070",
+      "type": "mcq",
+      "topic": "keywords",
+      "difficulty": "Intermediate",
+      "prompt": "Which set contains only reserved keywords?",
+      "code": "",
+      "options": [
+        "if, for, while",
+        "print, input, type",
+        "sum, max, min",
+        "list, dict, tuple"
+      ],
+      "answer": 0,
+      "explanation": "if, for and while are control-flow keywords; the other sets contain built-in names.",
+      "source": "notes",
+      "pages": [
+        4
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M071",
+      "type": "mcq",
+      "topic": "keywords",
+      "difficulty": "Intermediate",
+      "prompt": "Which name is NOT a reserved keyword?",
+      "code": "",
+      "options": [
+        "None",
+        "False",
+        "lambda",
+        "input"
+      ],
+      "answer": 3,
+      "explanation": "input is a built-in function, while None, False and lambda are reserved words.",
+      "source": "notes",
+      "pages": [
+        4
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M072",
+      "type": "mcq",
+      "topic": "keywords",
+      "difficulty": "Intermediate",
+      "prompt": "Which word starts with a capital letter when written as a Python literal?",
+      "code": "",
+      "options": [
+        "none",
+        "False",
+        "Else",
+        "WHILE"
+      ],
+      "answer": 1,
+      "explanation": "True, False and None are capitalized; most other keywords are lowercase.",
+      "source": "notes",
+      "pages": [
+        4
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M073",
+      "type": "mcq",
+      "topic": "keywords",
+      "difficulty": "Advanced",
+      "prompt": "What happens if you run the following?",
+      "code": "True = 5",
+      "options": [
+        "Prints 5",
+        "SyntaxError",
+        "NameError",
+        "Prints None"
+      ],
+      "answer": 1,
+      "explanation": "True is a keyword/literal and cannot be used as an assignment target.",
+      "source": "extension",
+      "pages": [
+        4
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M074",
+      "type": "mcq",
+      "topic": "keywords",
+      "difficulty": "Advanced",
+      "prompt": "Which expression is a valid use of the keyword operator is?",
+      "code": "",
+      "options": [
+        "x is None",
+        "is = 5",
+        "x is = None",
+        "is(x, None)"
+      ],
+      "answer": 0,
+      "explanation": "is is an identity-comparison operator, not an assignable variable or callable function.",
+      "source": "extension",
+      "pages": [
+        4
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M075",
+      "type": "mcq",
+      "topic": "keywords",
+      "difficulty": "Advanced",
+      "prompt": "What is the result?",
+      "code": "import keyword\nprint(keyword.iskeyword(\"while\"))",
+      "options": [
+        "False",
+        "True",
+        "SyntaxError",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "keyword.iskeyword checks whether a string is a reserved word.",
+      "source": "extension",
+      "pages": [
+        4
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M076",
+      "type": "mcq",
+      "topic": "calculations",
+      "difficulty": "Beginner",
+      "prompt": "What is printed?",
+      "code": "a = 5\nb = 10\nprint(\"Sum is\", a + b)",
+      "options": [
+        "510",
+        "Sum is 15",
+        "5 + 10",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "+ adds two integers and print displays the result.",
+      "source": "notes",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M077",
+      "type": "mcq",
+      "topic": "calculations",
+      "difficulty": "Beginner",
+      "prompt": "Which operator is best for finding the area of a square from its side length?",
+      "code": "",
+      "options": [
+        "side ** 2",
+        "side / 2",
+        "side % 2",
+        "side - 2"
+      ],
+      "answer": 0,
+      "explanation": "Area of a square is side × side, or side ** 2.",
+      "source": "notes",
+      "pages": [
+        11
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M078",
+      "type": "mcq",
+      "topic": "calculations",
+      "difficulty": "Beginner",
+      "prompt": "What is the mean of 4.5 and 7.5?",
+      "code": "",
+      "options": [
+        "12.0",
+        "6.0",
+        "5.5",
+        "3.0"
+      ],
+      "answer": 1,
+      "explanation": "(4.5 + 7.5) / 2 = 6.0.",
+      "source": "notes",
+      "pages": [
+        12
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M079",
+      "type": "mcq",
+      "topic": "calculations",
+      "difficulty": "Intermediate",
+      "prompt": "Which formula correctly computes the average of a and b?",
+      "code": "",
+      "options": [
+        "a + b / 2",
+        "(a + b) / 2",
+        "a / b",
+        "(a - b) / 2"
+      ],
+      "answer": 1,
+      "explanation": "Parentheses ensure you divide the *sum* by 2 rather than dividing only b.",
+      "source": "notes",
+      "pages": [
+        12
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M080",
+      "type": "mcq",
+      "topic": "calculations",
+      "difficulty": "Intermediate",
+      "prompt": "What is printed?",
+      "code": "a = 10\nb = 7\nprint(a >= b)",
+      "options": [
+        "True",
+        "False",
+        "10",
+        "7"
+      ],
+      "answer": 0,
+      "explanation": "10 is greater than or equal to 7; a >= b is a Boolean expression.",
+      "source": "notes",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M081",
+      "type": "mcq",
+      "topic": "calculations",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(10 - 6 / 2)",
+      "options": [
+        "7.0",
+        "4.0",
+        "10.0",
+        "TypeError"
+      ],
+      "answer": 0,
+      "explanation": "Division happens before subtraction: 6 / 2 is 3.0, and 10 - 3.0 is 7.0.",
+      "source": "extension",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M082",
+      "type": "mcq",
+      "topic": "calculations",
+      "difficulty": "Advanced",
+      "prompt": "What is the output?",
+      "code": "print(int((3 + 5) / 4))",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "5"
+      ],
+      "answer": 1,
+      "explanation": "(3 + 5) / 4 is 2.0, and int(2.0) gives 2.",
+      "source": "extension",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M083",
+      "type": "mcq",
+      "topic": "comments",
+      "difficulty": "Beginner",
+      "prompt": "Which character starts a single-line comment?",
+      "code": "",
+      "options": [
+        "#",
+        "//",
+        "<!--",
+        "%"
+      ],
+      "answer": 0,
+      "explanation": "Python uses # to start a comment outside a string.",
+      "source": "notes",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M084",
+      "type": "mcq",
+      "topic": "comments",
+      "difficulty": "Beginner",
+      "prompt": "What is printed?",
+      "code": "# This is a note\nprint(\"Hello\")",
+      "options": [
+        "Nothing",
+        "Hello",
+        "This is a note",
+        "SyntaxError"
+      ],
+      "answer": 1,
+      "explanation": "The comment is ignored and the print statement runs.",
+      "source": "notes",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M085",
+      "type": "mcq",
+      "topic": "comments",
+      "difficulty": "Beginner",
+      "prompt": "Is this valid Python?",
+      "code": "print(\"Hello\")  # a greeting",
+      "options": [
+        "Yes, a trailing # comment is allowed",
+        "No, comments must be on their own line",
+        "No, print cannot contain strings",
+        "Only if inside a function"
+      ],
+      "answer": 0,
+      "explanation": "A # comment may follow an executable statement on the same line.",
+      "source": "notes",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M086",
+      "type": "mcq",
+      "topic": "comments",
+      "difficulty": "Intermediate",
+      "prompt": "What does # mean inside a quoted string?",
+      "code": "print(\"A#B\")",
+      "options": [
+        "Always begins a comment",
+        "Is a literal # character",
+        "Causes NameError",
+        "Ends the program"
+      ],
+      "answer": 1,
+      "explanation": "Comment syntax is not recognized inside a string literal.",
+      "source": "notes",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M087",
+      "type": "mcq",
+      "topic": "comments",
+      "difficulty": "Intermediate",
+      "prompt": "How are triple quotes used in the lecture?",
+      "code": "",
+      "options": [
+        "To demonstrate multi-line explanatory text",
+        "To multiply a string",
+        "To assign a Boolean",
+        "To convert strings to floats"
+      ],
+      "answer": 0,
+      "explanation": "The PDF illustrates multi-line notes using triple-quoted text.",
+      "source": "notes",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M088",
+      "type": "mcq",
+      "topic": "comments",
+      "difficulty": "Advanced",
+      "prompt": "What is technically true of an unassigned triple-quoted block?",
+      "code": "",
+      "options": [
+        "It is a special token that Python erases in all contexts",
+        "It is a string literal expression, commonly used as a docstring in certain positions",
+        "It is always a syntax error",
+        "It is converted to # comments"
+      ],
+      "answer": 1,
+      "explanation": "The notes call it a multiline comment, but triple quotes actually create a string. At the start of a module/function/class it can become a docstring.",
+      "source": "extension",
+      "pages": [
+        5
+      ],
+      "tags": [
+        "interview",
+        "nuance"
+      ]
+    },
+    {
+      "id": "L1-M089",
+      "type": "mcq",
+      "topic": "comments",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(\"A#B\") # trailing comment",
+      "options": [
+        "A#B",
+        "A",
+        "B",
+        "SyntaxError"
+      ],
+      "answer": 0,
+      "explanation": "The # is enclosed in quotes so it is literal data, not a comment.",
+      "source": "extension",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M090",
+      "type": "mcq",
+      "topic": "comments",
+      "difficulty": "Advanced",
+      "prompt": "Which statement prints the text /* hi */?",
+      "code": "",
+      "options": [
+        "print(\"/* hi */\")",
+        "/* hi */",
+        "# print(\"/* hi */\")",
+        "print(/* hi */)"
+      ],
+      "answer": 0,
+      "explanation": "C-style comment markers are not Python comment syntax; you can print them as ordinary characters.",
+      "source": "extension",
+      "pages": [
+        5
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M091",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is 10 + 3?",
+      "code": "",
+      "options": [
+        "7",
+        "13",
+        "30",
+        "3"
+      ],
+      "answer": 1,
+      "explanation": "+ is arithmetic addition.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M092",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is 10 - 3?",
+      "code": "",
+      "options": [
+        "7",
+        "13",
+        "30",
+        "3"
+      ],
+      "answer": 0,
+      "explanation": "- is subtraction.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M093",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is 10 * 3?",
+      "code": "",
+      "options": [
+        "13",
+        "7",
+        "30",
+        "1000"
+      ],
+      "answer": 2,
+      "explanation": "* multiplies operands.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M094",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is 10 / 2 in Python 3?",
+      "code": "",
+      "options": [
+        "5",
+        "5.0",
+        "2",
+        "SyntaxError"
+      ],
+      "answer": 1,
+      "explanation": "The / operator performs true division, producing a float for built-in integers.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M095",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is 10 % 3?",
+      "code": "",
+      "options": [
+        "3",
+        "1",
+        "0",
+        "10"
+      ],
+      "answer": 1,
+      "explanation": "% gives the remainder; 10 = 3×3 + 1.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M096",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is 2 ** 3?",
+      "code": "",
+      "options": [
+        "6",
+        "5",
+        "8",
+        "9"
+      ],
+      "answer": 2,
+      "explanation": "** exponentiates: 2³ = 8.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M097",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "Which operator checks equality?",
+      "code": "",
+      "options": [
+        "=",
+        "==",
+        "!=",
+        "is not"
+      ],
+      "answer": 1,
+      "explanation": "== compares values; = assigns a value.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M098",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is 5 != 5?",
+      "code": "",
+      "options": [
+        "True",
+        "False",
+        "None",
+        "SyntaxError"
+      ],
+      "answer": 1,
+      "explanation": "!= is true only when the two values differ.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M099",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is 8 >= 8?",
+      "code": "",
+      "options": [
+        "False",
+        "True",
+        "8",
+        "SyntaxError"
+      ],
+      "answer": 1,
+      "explanation": "Greater than or equal to includes equality.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M100",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is 8 <= 3?",
+      "code": "",
+      "options": [
+        "True",
+        "False",
+        "3",
+        "8"
+      ],
+      "answer": 1,
+      "explanation": "8 is neither less than nor equal to 3.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M101",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What does x += 5 do?",
+      "code": "",
+      "options": [
+        "Adds 5 to x and reassigns the result",
+        "Tests whether x equals 5",
+        "Clears x",
+        "Always creates a new variable named +="
+      ],
+      "answer": 0,
+      "explanation": "Augmented assignment corresponds approximately to x = x + 5 for immutable numeric x.",
+      "source": "notes",
+      "pages": [
+        7
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M102",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is True and False?",
+      "code": "",
+      "options": [
+        "True",
+        "False",
+        "None",
+        "Error"
+      ],
+      "answer": 1,
+      "explanation": "Boolean and returns True only when both values are truthy.",
+      "source": "notes",
+      "pages": [
+        7
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M103",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is True or False?",
+      "code": "",
+      "options": [
+        "True",
+        "False",
+        "None",
+        "Error"
+      ],
+      "answer": 0,
+      "explanation": "Boolean or is truthy when at least one condition is truthy.",
+      "source": "notes",
+      "pages": [
+        7
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M104",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "prompt": "What is not True?",
+      "code": "",
+      "options": [
+        "True",
+        "False",
+        "1",
+        "None"
+      ],
+      "answer": 1,
+      "explanation": "not reverses truth value and always returns a bool.",
+      "source": "notes",
+      "pages": [
+        7
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M105",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "After this code, what is num?",
+      "code": "num = 10\nnum += 5\nnum *= 2\nnum -= 10\nnum **= 2\nprint(num)",
+      "options": [
+        "10",
+        "20",
+        "30",
+        "400"
+      ],
+      "answer": 3,
+      "explanation": "10→15→30→20→400 through +=, *=, -= and **=.",
+      "source": "notes",
+      "pages": [
+        7
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M106",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "What is printed?",
+      "code": "print((5 > 3) and (2 > 1))",
+      "options": [
+        "False",
+        "True",
+        "5",
+        "3"
+      ],
+      "answer": 1,
+      "explanation": "Both comparisons are true, so their and result is True.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M107",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "What is the output?",
+      "code": "print(3 > 5 or 1 > 2)",
+      "options": [
+        "False",
+        "True",
+        "5",
+        "3"
+      ],
+      "answer": 0,
+      "explanation": "3 is not greater than 5; since both sides are False, or returns False.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M108",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "What is the output?",
+      "code": "print(not 2 == 3)",
+      "options": [
+        "False",
+        "True",
+        "2",
+        "Error"
+      ],
+      "answer": 1,
+      "explanation": "not has lower precedence than comparisons: not (2 == 3) is True.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M109",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "What is the result?",
+      "code": "print(15 // 2)",
+      "options": [
+        "7.0",
+        "3.5",
+        "7",
+        "6"
+      ],
+      "answer": 2,
+      "explanation": "Integer floor division // discards fractional part toward negative infinity. 15 // 2 = 7.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M110",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "Which update is equivalent to x %= 3?",
+      "code": "",
+      "options": [
+        "x = x ** 3",
+        "x = x % 3",
+        "x = x / 3",
+        "x = x + 3"
+      ],
+      "answer": 1,
+      "explanation": "%= assigns the modulo result back to x.",
+      "source": "notes",
+      "pages": [
+        7
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M111",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "Which update is equivalent to x /= 2?",
+      "code": "",
+      "options": [
+        "x = x // 2",
+        "x = x * 2",
+        "x = x / 2",
+        "x = x % 2"
+      ],
+      "answer": 2,
+      "explanation": "/= uses true division, so a numerical integer often becomes a float.",
+      "source": "notes",
+      "pages": [
+        7
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M112",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "What is printed?",
+      "code": "x = 8\nx /= 2\nprint(x)",
+      "options": [
+        "4",
+        "4.0",
+        "8",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "8 / 2 is 4.0, then assigning via /= produces a float.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M113",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "What is the result?",
+      "code": "print(1 < 2 < 3)",
+      "options": [
+        "True",
+        "False",
+        "Error",
+        "2"
+      ],
+      "answer": 0,
+      "explanation": "Python chains comparisons: 1 < 2 < 3 tests both 1 < 2 and 2 < 3.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M114",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "What is 7 % 4?",
+      "code": "",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "answer": 2,
+      "explanation": "7 divided by 4 leaves a remainder of 3.",
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M115",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "prompt": "Which operator has higher precedence among + and *?",
+      "code": "",
+      "options": [
+        "+",
+        "*",
+        "Both always tie",
+        "Neither"
+      ],
+      "answer": 1,
+      "explanation": "Multiplication occurs before addition, absent parentheses.",
+      "source": "notes",
+      "pages": [
+        7
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M116",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(2 ** 3 ** 2)",
+      "options": [
+        "512",
+        "64",
+        "256",
+        "SyntaxError"
+      ],
+      "answer": 0,
+      "explanation": "Exponentiation is right-associative: 2 ** (3 ** 2) = 2 ** 9 = 512.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M117",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(-3 ** 2)",
+      "options": [
+        "9",
+        "-9",
+        "SyntaxError",
+        "6"
+      ],
+      "answer": 1,
+      "explanation": "Exponentiation binds more tightly than unary minus on the left: -(3 ** 2) = -9.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M118",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print((-3) ** 2)",
+      "options": [
+        "-9",
+        "9",
+        "6",
+        "SyntaxError"
+      ],
+      "answer": 1,
+      "explanation": "Parentheses make -3 the base of the power, giving (-3)² = 9.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M119",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is -7 // 3?",
+      "code": "",
+      "options": [
+        "-2",
+        "-3",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "explanation": "Floor division rounds toward negative infinity, so -7 // 3 = -3.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M120",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is -7 % 3?",
+      "code": "",
+      "options": [
+        "-1",
+        "1",
+        "2",
+        "-2"
+      ],
+      "answer": 2,
+      "explanation": "Modulo has the divisor’s sign when the divisor is positive: -7 = (-3)*3 + 2.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M121",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is 7 % -3?",
+      "code": "",
+      "options": [
+        "1",
+        "-1",
+        "-2",
+        "2"
+      ],
+      "answer": 2,
+      "explanation": "With a negative divisor, modulo’s nonzero result has a negative sign: 7 = (-3)*(-3) + (-2).",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M122",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(1 == 1 == 2)",
+      "options": [
+        "True",
+        "False",
+        "1",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "Python’s comparison chain means (1 == 1) and (1 == 2), which is False.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M123",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(2 < 3 > 1)",
+      "options": [
+        "True",
+        "False",
+        "2",
+        "TypeError"
+      ],
+      "answer": 0,
+      "explanation": "2 < 3 and 3 > 1 are both True: comparison chaining is supported.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M124",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(False or True and True)",
+      "options": [
+        "True",
+        "False",
+        "0",
+        "None"
+      ],
+      "answer": 0,
+      "explanation": "and is evaluated before or: False or (True and True) => True.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M125",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(not False and (False or True))",
+      "options": [
+        "False",
+        "True",
+        "0",
+        "None"
+      ],
+      "answer": 1,
+      "explanation": "not binds more tightly than and and or: (not False) and (False or True) = True.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M126",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(not 1 < 2)",
+      "options": [
+        "True",
+        "False",
+        "0",
+        "None"
+      ],
+      "answer": 1,
+      "explanation": "not applies to the comparison result, so not (1 < 2) is False.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M127",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is the result of 0 or 5?",
+      "code": "print(0 or 5)",
+      "options": [
+        "True",
+        "False",
+        "5",
+        "0"
+      ],
+      "answer": 2,
+      "explanation": "or returns one of its operands, not necessarily a bool: 0 is falsy, so it returns 5.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M128",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is the result of 3 and 9?",
+      "code": "print(3 and 9)",
+      "options": [
+        "True",
+        "False",
+        "3",
+        "9"
+      ],
+      "answer": 3,
+      "explanation": "and returns the last operand if all operands are truthy.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M129",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is the result of \"\" or \"fallback\"?",
+      "code": "print(\"\" or \"fallback\")",
+      "options": [
+        "\"\"",
+        "\"fallback\"",
+        "True",
+        "False"
+      ],
+      "answer": 1,
+      "explanation": "An empty string is falsy, so or returns the nonempty right operand.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "practical"
+      ]
+    },
+    {
+      "id": "L1-M130",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is the result of [] and 42?",
+      "code": "print([] and 42)",
+      "options": [
+        "[]",
+        "42",
+        "False",
+        "TypeError"
+      ],
+      "answer": 0,
+      "explanation": "The empty list is falsy, and and returns that first falsy operand without evaluating the other.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M131",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What happens here?",
+      "code": "print(0 and 1 / 0)",
+      "options": [
+        "ZeroDivisionError",
+        "Prints 0",
+        "Prints 1",
+        "SyntaxError"
+      ],
+      "answer": 1,
+      "explanation": "The left operand of and is falsy, so the right expression is never evaluated.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "short-circuit"
+      ]
+    },
+    {
+      "id": "L1-M132",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What happens here?",
+      "code": "print(True or (1 / 0))",
+      "options": [
+        "ZeroDivisionError",
+        "Prints True",
+        "Prints False",
+        "SyntaxError"
+      ],
+      "answer": 1,
+      "explanation": "True or ... short-circuits before division by zero.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "short-circuit"
+      ]
+    },
+    {
+      "id": "L1-M133",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "a = None\nb = 0\nprint(a is b)",
+      "options": [
+        "False",
+        "True",
+        "0",
+        "SyntaxError"
+      ],
+      "answer": 0,
+      "explanation": "is checks object identity, not equality. None and 0 are different objects.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "identity"
+      ]
+    },
+    {
+      "id": "L1-M134",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "Which expression is safest for numeric equality?",
+      "code": "",
+      "options": [
+        "a is b",
+        "a == b",
+        "id(a) == id(b)",
+        "a = b"
+      ],
+      "answer": 1,
+      "explanation": "Use == for value equality. Identity via is is not reliable for comparing numeric values.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M135",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(0.1 + 0.2 == 0.3)",
+      "options": [
+        "True",
+        "False",
+        "TypeError",
+        "None"
+      ],
+      "answer": 1,
+      "explanation": "Floating point 0.1 + 0.2 is not represented as exactly 0.3 in binary floating point.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M136",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "Which comparison is commonly preferred for approximate floating-point equality?",
+      "code": "",
+      "options": [
+        "a is b",
+        "math.isclose(a, b)",
+        "a = b",
+        "str(a) is str(b)"
+      ],
+      "answer": 1,
+      "explanation": "math.isclose compares floats using controlled relative/absolute tolerances.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "best-practice"
+      ]
+    },
+    {
+      "id": "L1-M137",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(2 ** 3 - 3)",
+      "options": [
+        "4",
+        "5",
+        "6",
+        "SyntaxError"
+      ],
+      "answer": 1,
+      "explanation": "True is 1, and the expression evaluates as 2+3=5 because 0**0 is 1 in Python. However code uses 2**3 - 3 => 5.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M138",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What does 0 ** 0 evaluate to in Python?",
+      "code": "",
+      "options": [
+        "0",
+        "1",
+        "ValueError",
+        "None"
+      ],
+      "answer": 1,
+      "explanation": "Python defines 0 ** 0 as 1 for integer exponentiation.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M139",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(not (1 == 1))",
+      "options": [
+        "True",
+        "False",
+        "1",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "1 == 1 is True; not of that Boolean is False.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M140",
+      "type": "mcq",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(11 % 3)",
+      "options": [
+        "0",
+        "1",
+        "2",
+        "TypeError"
+      ],
+      "answer": 2,
+      "explanation": "11 = 3 × 3 + 2, so 11 % 3 is 2.",
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M141",
+      "type": "mcq",
+      "topic": "conversion",
+      "difficulty": "Beginner",
+      "prompt": "What does implicit type conversion mean?",
+      "code": "",
+      "options": [
+        "Manually calling int()",
+        "Python automatically converts a compatible type when performing an operation",
+        "Typing a string with quotes",
+        "Deleting a variable"
+      ],
+      "answer": 1,
+      "explanation": "Implicit conversion occurs automatically, such as adding int and float.",
+      "source": "notes",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M142",
+      "type": "mcq",
+      "topic": "conversion",
+      "difficulty": "Beginner",
+      "prompt": "What is printed?",
+      "code": "print(1 + 2.0)",
+      "options": [
+        "3",
+        "3.0",
+        "12.0",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "A mixed int + float arithmetic operation yields a float.",
+      "source": "notes",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M143",
+      "type": "mcq",
+      "topic": "conversion",
+      "difficulty": "Beginner",
+      "prompt": "What happens with 1 + \"2\"?",
+      "code": "",
+      "options": [
+        "3",
+        "\"12\"",
+        "TypeError",
+        "1.0"
+      ],
+      "answer": 2,
+      "explanation": "Python does not implicitly coerce a string into an integer for addition.",
+      "source": "notes",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M144",
+      "type": "mcq",
+      "topic": "conversion",
+      "difficulty": "Intermediate",
+      "prompt": "What is the type of 5 + 0.5?",
+      "code": "",
+      "options": [
+        "int",
+        "float",
+        "str",
+        "bool"
+      ],
+      "answer": 1,
+      "explanation": "The floating-point operand promotes the numeric result to float.",
+      "source": "notes",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M145",
+      "type": "mcq",
+      "topic": "conversion",
+      "difficulty": "Intermediate",
+      "prompt": "What is printed?",
+      "code": "print(1 + \"2\")",
+      "options": [
+        "\"12\"",
+        "3",
+        "TypeError",
+        "1.2"
+      ],
+      "answer": 2,
+      "explanation": "Mixing an int and a str with + raises TypeError.",
+      "source": "notes",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M146",
+      "type": "mcq",
+      "topic": "conversion",
+      "difficulty": "Intermediate",
+      "prompt": "What is the result of 3 + True?",
+      "code": "",
+      "options": [
+        "TypeError",
+        "4",
+        "3True",
+        "True"
+      ],
+      "answer": 1,
+      "explanation": "Boolean True behaves like integer 1 in numeric addition.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M147",
+      "type": "mcq",
+      "topic": "conversion",
+      "difficulty": "Advanced",
+      "prompt": "What is the type of 1 + 2j?",
+      "code": "",
+      "options": [
+        "int",
+        "float",
+        "complex",
+        "str"
+      ],
+      "answer": 2,
+      "explanation": "Mixed integer and complex arithmetic produces a complex result.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M148",
+      "type": "mcq",
+      "topic": "conversion",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(3 == 3.0)",
+      "options": [
+        "True",
+        "False",
+        "TypeError",
+        "None"
+      ],
+      "answer": 0,
+      "explanation": "Numeric comparison of integer 3 and floating 3.0 is equal in value.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M149",
+      "type": "mcq",
+      "topic": "conversion",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(3.0 + \"3\")",
+      "options": [
+        "\"33\"",
+        "6",
+        "TypeError",
+        "3.0"
+      ],
+      "answer": 2,
+      "explanation": "A numeric float and a string do not support + together.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M150",
+      "type": "mcq",
+      "topic": "conversion",
+      "difficulty": "Advanced",
+      "prompt": "What does type(1 / 1).__name__ return?",
+      "code": "",
+      "options": [
+        "\"int\"",
+        "\"float\"",
+        "\"str\"",
+        "\"complex\""
+      ],
+      "answer": 1,
+      "explanation": "The / operator produces float 1.0 even if it divides two integers.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M151",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Beginner",
+      "prompt": "What is explicit type casting?",
+      "code": "",
+      "options": [
+        "An automatic operation with no function call",
+        "Manually converting a value to a target type",
+        "Compiling a program",
+        "Writing comments"
+      ],
+      "answer": 1,
+      "explanation": "Calling int, float, str, bool, etc. explicitly converts values.",
+      "source": "notes",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M152",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Beginner",
+      "prompt": "What is int(\"25\")?",
+      "code": "",
+      "options": [
+        "\"25\"",
+        "25",
+        "25.0",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "int parses a decimal integer string.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M153",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Beginner",
+      "prompt": "What is float(5)?",
+      "code": "",
+      "options": [
+        "5",
+        "5.0",
+        "\"5.0\"",
+        "True"
+      ],
+      "answer": 1,
+      "explanation": "float converts 5 into floating point 5.0.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M154",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Beginner",
+      "prompt": "What is str(100)?",
+      "code": "",
+      "options": [
+        "100",
+        "\"100\"",
+        "100.0",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "str converts numeric 100 into textual \"100\".",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M155",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Beginner",
+      "prompt": "What happens with int(\"hello\")?",
+      "code": "",
+      "options": [
+        "0",
+        "None",
+        "ValueError",
+        "SyntaxError"
+      ],
+      "answer": 2,
+      "explanation": "\"hello\" is not a decimal integer literal, so int raises ValueError.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M156",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is printed?",
+      "code": "print(1 + int(\"2\"))",
+      "options": [
+        "3",
+        "\"12\"",
+        "12",
+        "TypeError"
+      ],
+      "answer": 0,
+      "explanation": "int(\"2\") converts the string to an integer, so 1+2=3.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M157",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is printed?",
+      "code": "print(float(5))",
+      "options": [
+        "5",
+        "5.0",
+        "\"5\"",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "The division and int conversion can produce 5.0 here because float(5) is 5.0.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M158",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is bool(\"\")?",
+      "code": "",
+      "options": [
+        "True",
+        "False",
+        "\"\"",
+        "ValueError"
+      ],
+      "answer": 1,
+      "explanation": "The empty string is falsy; bool returns False.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M159",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is bool(\"False\")?",
+      "code": "",
+      "options": [
+        "True",
+        "False",
+        "ValueError",
+        "None"
+      ],
+      "answer": 0,
+      "explanation": "Any nonempty string is truthy, even a string spelled \"False\".",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M160",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is bool(0)?",
+      "code": "",
+      "options": [
+        "True",
+        "False",
+        "0",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "Numeric zero is falsy.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M161",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is bool(\"0\")?",
+      "code": "",
+      "options": [
+        "True",
+        "False",
+        "0",
+        "ValueError"
+      ],
+      "answer": 0,
+      "explanation": "\"0\" is a nonempty string, hence truthy.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M162",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is ord(\"A\")?",
+      "code": "",
+      "options": [
+        "65",
+        "\"A\"",
+        "0x41",
+        "1"
+      ],
+      "answer": 0,
+      "explanation": "ord returns the Unicode code point; uppercase A is 65.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M163",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is hex(255)?",
+      "code": "",
+      "options": [
+        "\"255\"",
+        "\"0xff\"",
+        "\"ff\"",
+        "255"
+      ],
+      "answer": 1,
+      "explanation": "hex returns a string with the 0x prefix.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M164",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is oct(8)?",
+      "code": "",
+      "options": [
+        "\"8\"",
+        "\"0o8\"",
+        "\"0o10\"",
+        "\"010\""
+      ],
+      "answer": 2,
+      "explanation": "Octal 10 represents decimal 8; oct prefixes its string with 0o.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M165",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is the result of list(\"cat\")?",
+      "code": "",
+      "options": [
+        "[\"cat\"]",
+        "[\"c\", \"a\", \"t\"]",
+        "(\"c\", \"a\", \"t\")",
+        "{\"cat\"}"
+      ],
+      "answer": 1,
+      "explanation": "list iterates the string and collects individual characters.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M166",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is the result of tuple([1, 2])?",
+      "code": "",
+      "options": [
+        "[1, 2]",
+        "(1, 2)",
+        "{1, 2}",
+        "\"12\""
+      ],
+      "answer": 1,
+      "explanation": "tuple creates an immutable ordered tuple from the iterable.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M167",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is the value of len(set([2, 2, 3]))?",
+      "code": "",
+      "options": [
+        "3",
+        "2",
+        "1",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "Sets contain unique elements, so the duplicates collapse to {2, 3}.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M168",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "prompt": "What is dict([(\"a\", 1), (\"b\", 2)])?",
+      "code": "",
+      "options": [
+        "{\"a\": 1, \"b\": 2}",
+        "[(\"a\", 1), (\"b\", 2)]",
+        "{\"a\", \"b\"}",
+        "TypeError"
+      ],
+      "answer": 0,
+      "explanation": "dict can construct a dictionary from a sequence of key/value pairs.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M169",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is int(3.9)?",
+      "code": "",
+      "options": [
+        "4",
+        "3",
+        "3.9",
+        "ValueError"
+      ],
+      "answer": 1,
+      "explanation": "Casting float to int truncates toward zero, it does not round.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M170",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is int(-3.9)?",
+      "code": "",
+      "options": [
+        "-4",
+        "-3",
+        "3",
+        "ValueError"
+      ],
+      "answer": 1,
+      "explanation": "int truncates toward zero; -3.9 becomes -3.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M171",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is int(\"3.5\")?",
+      "code": "",
+      "options": [
+        "3",
+        "4",
+        "3.5",
+        "ValueError"
+      ],
+      "answer": 3,
+      "explanation": "A decimal-point string is not a valid integer literal for direct int parsing. float(\"3.5\") succeeds.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M172",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is int(\"101\", 2)?",
+      "code": "",
+      "options": [
+        "101",
+        "2",
+        "5",
+        "ValueError"
+      ],
+      "answer": 2,
+      "explanation": "Parsing base 2 makes 101₂ = 1×4 + 0×2 + 1 = 5.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M173",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is int(\"0xff\", 16)?",
+      "code": "",
+      "options": [
+        "15",
+        "255",
+        "16",
+        "ValueError"
+      ],
+      "answer": 1,
+      "explanation": "The base-16 string 0xff represents decimal 255.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M174",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is complex(2, 3)?",
+      "code": "",
+      "options": [
+        "(2+3j)",
+        "5",
+        "(3+2j)",
+        "TypeError"
+      ],
+      "answer": 0,
+      "explanation": "complex(real, imag) builds the number 2+3j.",
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M175",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is bool([])?",
+      "code": "",
+      "options": [
+        "True",
+        "False",
+        "[]",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "An empty list is falsy.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M176",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is str(None)?",
+      "code": "",
+      "options": [
+        "\"\"",
+        "\"none\"",
+        "\"None\"",
+        "TypeError"
+      ],
+      "answer": 2,
+      "explanation": "str represents None as the text \"None\".",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M177",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is printed?",
+      "code": "print(0.1 + 0.2 == 0.3)",
+      "options": [
+        "0.3",
+        "False",
+        "True",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "IEEE binary floating point stores 0.1+0.2 as a nearby number, not the exact float value for 0.3.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M178",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is round(2.675, 2) in typical Python 3?",
+      "code": "",
+      "options": [
+        "2.68",
+        "2.67",
+        "2.7",
+        "2.675"
+      ],
+      "answer": 1,
+      "explanation": "Floating point 2.675 is represented slightly below the exact decimal, and round returns 2.67.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M179",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is round(2.5) in Python 3?",
+      "code": "",
+      "options": [
+        "2",
+        "3",
+        "2.5",
+        "Error"
+      ],
+      "answer": 0,
+      "explanation": "Python uses round-to-nearest with ties-to-even for exact ties, so round(2.5) = 2.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M180",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is round(3.5) in Python 3?",
+      "code": "",
+      "options": [
+        "3",
+        "4",
+        "3.5",
+        "Error"
+      ],
+      "answer": 1,
+      "explanation": "For exact halves, Python rounds to the nearest even integer, so 3.5 → 4.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "famous",
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M181",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What happens with int(None)?",
+      "code": "",
+      "options": [
+        "0",
+        "None",
+        "TypeError",
+        "ValueError"
+      ],
+      "answer": 2,
+      "explanation": "None cannot be converted directly to an integer with int.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M182",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What happens with int(\"1_000\")?",
+      "code": "",
+      "options": [
+        "ValueError",
+        "1000",
+        "1",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "int accepts underscores between digits in numeric strings.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M183",
+      "type": "mcq",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "prompt": "What is chr(65)?",
+      "code": "",
+      "options": [
+        "\"A\"",
+        "65",
+        "\"a\"",
+        "ValueError"
+      ],
+      "answer": 0,
+      "explanation": "chr is the inverse of ord for a valid Unicode code point.",
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M184",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Beginner",
+      "prompt": "What is the return type of input()?",
+      "code": "",
+      "options": [
+        "int",
+        "float",
+        "str",
+        "bool"
+      ],
+      "answer": 2,
+      "explanation": "input returns a string for keyboard text.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M185",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Beginner",
+      "prompt": "Which expression reads an integer from the keyboard?",
+      "code": "",
+      "options": [
+        "int(input(\"Number: \"))",
+        "input(int(\"Number: \"))",
+        "str(input())",
+        "print(input())"
+      ],
+      "answer": 0,
+      "explanation": "input reads a string; int then converts the entered digits to an integer.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M186",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Beginner",
+      "prompt": "Which expression reads a floating-point number?",
+      "code": "",
+      "options": [
+        "int(input())",
+        "float(input())",
+        "type(input())",
+        "bool(int)"
+      ],
+      "answer": 1,
+      "explanation": "float(input()) converts the entered text to a floating-point number.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M187",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Beginner",
+      "prompt": "Given user input 18, what is the type of age?",
+      "code": "age = input(\"Age: \")",
+      "options": [
+        "int",
+        "float",
+        "str",
+        "bool"
+      ],
+      "answer": 2,
+      "explanation": "Even numeric-looking input is a string until converted.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M188",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Intermediate",
+      "prompt": "If the user types 18, what is printed?",
+      "code": "age = int(input(\"Age: \"))\nprint(age + 1)",
+      "options": [
+        "19",
+        "181",
+        "18",
+        "TypeError"
+      ],
+      "answer": 0,
+      "explanation": "int converts the entered string \"18\" to 18, then +1 gives 19.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M189",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Intermediate",
+      "prompt": "If a user types 12 and then 8, what is printed?",
+      "code": "a = int(input())\nb = int(input())\nprint(a + b)",
+      "options": [
+        "\"128\"",
+        "20",
+        "12 8",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "Both values are converted to int before addition.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M190",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Intermediate",
+      "prompt": "If the user enters 5, what is the area printed?",
+      "code": "side = float(input())\nprint(side * side)",
+      "options": [
+        "25.0",
+        "10.0",
+        "25",
+        "5.0"
+      ],
+      "answer": 0,
+      "explanation": "float(input()) makes 5.0, and 5.0 * 5.0 = 25.0.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M191",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Intermediate",
+      "prompt": "If input lines are 4.5 and 7.5, what does this print?",
+      "code": "a = float(input())\nb = float(input())\nprint((a + b) / 2)",
+      "options": [
+        "12.0",
+        "6.0",
+        "6",
+        "ValueError"
+      ],
+      "answer": 1,
+      "explanation": "(4.5 + 7.5) / 2 yields 6.0.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M192",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Intermediate",
+      "prompt": "What is printed if a=10 and b=7 are entered?",
+      "code": "a = int(input())\nb = int(input())\nprint(a >= b)",
+      "options": [
+        "10",
+        "7",
+        "True",
+        "False"
+      ],
+      "answer": 2,
+      "explanation": "Integer 10 >= integer 7 evaluates to True.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M193",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Intermediate",
+      "prompt": "What happens if you type hello in int(input())?",
+      "code": "",
+      "options": [
+        "It becomes 0",
+        "It becomes None",
+        "ValueError",
+        "It becomes \"hello\" silently"
+      ],
+      "answer": 2,
+      "explanation": "Parsing nonnumeric user text as an int raises ValueError.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M194",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Intermediate",
+      "prompt": "Why might 50 * 1.1 print as 55.00000000000001?",
+      "code": "",
+      "options": [
+        "The computer always adds extra tax",
+        "Binary floating-point representation introduces small rounding artifacts",
+        "It is integer overflow",
+        "input converts 50 to a string"
+      ],
+      "answer": 1,
+      "explanation": "Many decimal fractions cannot be represented exactly in binary floating point.",
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M195",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Intermediate",
+      "prompt": "Which function rounds a numeric float value to two decimal places (without guaranteeing two visible trailing digits)?",
+      "code": "print(round(55.00000000000001, 2))",
+      "options": [
+        "round(value, 2)",
+        "int(value * 2)",
+        "str(value, 2)",
+        "value // 2"
+      ],
+      "answer": 0,
+      "explanation": "round(value, 2) computes a rounded number. Fixed display padding can also be done with formatting.",
+      "source": "notes",
+      "pages": [
+        11
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M196",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Advanced",
+      "prompt": "If input returns \"10\", what does input() + input() print when both entries are 10?",
+      "code": "a = input()\nb = input()\nprint(a + b)",
+      "options": [
+        "20",
+        "\"1010\"",
+        "10.0",
+        "TypeError"
+      ],
+      "answer": 1,
+      "explanation": "Both calls return strings, and string + concatenates them.",
+      "source": "extension",
+      "pages": [
+        10
+      ],
+      "tags": [
+        "trap"
+      ]
+    },
+    {
+      "id": "L1-M197",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Advanced",
+      "prompt": "If the user enters a blank line, what is the result of int(input())?",
+      "code": "",
+      "options": [
+        "0",
+        "None",
+        "ValueError",
+        "An empty integer"
+      ],
+      "answer": 2,
+      "explanation": "int(\"\") fails because an empty string is not a valid integer representation.",
+      "source": "extension",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M198",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Advanced",
+      "prompt": "Which statement correctly prints a price with exactly two digits after the decimal point?",
+      "code": "",
+      "options": [
+        "print(f\"{price:.2f}\")",
+        "print(price, 2)",
+        "print(str(price, 2))",
+        "print(float(price, 2))"
+      ],
+      "answer": 0,
+      "explanation": "An f-string format specification .2f gives a fixed two-decimal display (including trailing zeroes).",
+      "source": "extension",
+      "pages": [
+        10
+      ],
+      "tags": [
+        "practical"
+      ]
+    },
+    {
+      "id": "L1-M199",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Advanced",
+      "prompt": "What should a program typically do when converting uncertain user input?",
+      "code": "",
+      "options": [
+        "Assume everyone types correctly",
+        "Validate input or handle ValueError",
+        "Disable all output",
+        "Use eval(input())"
+      ],
+      "answer": 1,
+      "explanation": "Input validation or a try/except ValueError prevents unhandled crashes for invalid text.",
+      "source": "extension",
+      "pages": [
+        10
+      ],
+      "tags": [
+        "practical"
+      ]
+    },
+    {
+      "id": "L1-M200",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Advanced",
+      "prompt": "What exception can input() raise on end-of-file without a line?",
+      "code": "",
+      "options": [
+        "EOFError",
+        "KeyError",
+        "IndexError",
+        "AttributeError"
+      ],
+      "answer": 0,
+      "explanation": "When no more input is available, input may raise EOFError.",
+      "source": "extension",
+      "pages": [
+        10
+      ],
+      "tags": []
+    },
+    {
+      "id": "L1-M201",
+      "type": "mcq",
+      "topic": "input",
+      "difficulty": "Advanced",
+      "prompt": "If a user enters the text True, what does bool(input()) evaluate to?",
+      "code": "",
+      "options": [
+        "False",
+        "True",
+        "TypeError",
+        "None"
+      ],
+      "answer": 1,
+      "explanation": "The entered text is a nonempty string, regardless of its spelling; all nonempty strings are truthy.",
+      "source": "extension",
+      "pages": [
+        10
+      ],
+      "tags": [
+        "trap"
+      ]
+    }
+  ],
+  "challenges": [
+    {
+      "id": "L1-C001",
+      "type": "coding",
+      "topic": "print",
+      "difficulty": "Beginner",
+      "title": "Hello, World",
+      "prompt": "Write a program that prints `Hello World` exactly once.",
+      "starter": "",
+      "hint": "Use print with one string argument.",
+      "solution": "print(\"Hello World\")",
+      "samples": [
+        {
+          "input": "(none)",
+          "output": "Hello World"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        1
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C002",
+      "type": "coding",
+      "topic": "print",
+      "difficulty": "Beginner",
+      "title": "Print three words",
+      "prompt": "Print the words `Python is fun` in one statement using three separate print arguments.",
+      "starter": "",
+      "hint": "Use commas between print arguments.",
+      "solution": "print(\"Python\", \"is\", \"fun\")",
+      "samples": [
+        {
+          "input": "(none)",
+          "output": "Python is fun"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C003",
+      "type": "coding",
+      "topic": "variables",
+      "difficulty": "Beginner",
+      "title": "Your first variables",
+      "prompt": "Create variables `name` and `age` with values `Aman` and `18`, then print `Aman 18` on a line.",
+      "starter": "name = ...\nage = ...",
+      "hint": "Remember that strings need quotation marks.",
+      "solution": "name = \"Aman\"\nage = 18\nprint(name, age)",
+      "samples": [
+        {
+          "input": "(none)",
+          "output": "Aman 18"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        2
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C004",
+      "type": "coding",
+      "topic": "calculations",
+      "difficulty": "Beginner",
+      "title": "Sum of two integers",
+      "prompt": "Read two integer inputs and print their sum in the format `Sum = N`.",
+      "starter": "a = int(input())\nb = int(input())",
+      "hint": "Convert both strings using int.",
+      "solution": "a = int(input())\nb = int(input())\nprint(\"Sum =\", a + b)",
+      "samples": [
+        {
+          "input": "12\n8",
+          "output": "Sum = 20"
+        },
+        {
+          "input": "-4\n7",
+          "output": "Sum = 3"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        11
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C005",
+      "type": "coding",
+      "topic": "calculations",
+      "difficulty": "Beginner",
+      "title": "Square area",
+      "prompt": "Read a floating-point side and print the area in the form `Area = N`.",
+      "starter": "side = float(input())",
+      "hint": "Use side ** 2 or side * side.",
+      "solution": "side = float(input())\nprint(\"Area =\", side ** 2)",
+      "samples": [
+        {
+          "input": "5",
+          "output": "Area = 25.0"
+        },
+        {
+          "input": "2.5",
+          "output": "Area = 6.25"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        11
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C006",
+      "type": "coding",
+      "topic": "calculations",
+      "difficulty": "Beginner",
+      "title": "Average two floats",
+      "prompt": "Read two floating-point numbers and print their average in the form `Average = N`.",
+      "starter": "a = float(input())\nb = float(input())",
+      "hint": "Use (a + b) / 2.",
+      "solution": "a = float(input())\nb = float(input())\nprint(\"Average =\", (a + b) / 2)",
+      "samples": [
+        {
+          "input": "4.5\n7.5",
+          "output": "Average = 6.0"
+        },
+        {
+          "input": "-2.0\n2.0",
+          "output": "Average = 0.0"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        12
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C007",
+      "type": "coding",
+      "topic": "operators",
+      "difficulty": "Beginner",
+      "title": "Compare two values",
+      "prompt": "Read two integers and print True if the first is greater than or equal to the second, otherwise False.",
+      "starter": "a = int(input())\nb = int(input())",
+      "hint": "A comparison evaluates directly to a Boolean.",
+      "solution": "a = int(input())\nb = int(input())\nprint(a >= b)",
+      "samples": [
+        {
+          "input": "10\n7",
+          "output": "True"
+        },
+        {
+          "input": "7\n10",
+          "output": "False"
+        },
+        {
+          "input": "5\n5",
+          "output": "True"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        12
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C008",
+      "type": "coding",
+      "topic": "casting",
+      "difficulty": "Beginner",
+      "title": "Convert and add",
+      "prompt": "Read a whole number as a string with input(), convert it using int(), add 10 and print the result.",
+      "starter": "number_text = input()",
+      "hint": "int(number_text) converts text to a number.",
+      "solution": "number_text = input()\nprint(int(number_text) + 10)",
+      "samples": [
+        {
+          "input": "15",
+          "output": "25"
+        },
+        {
+          "input": "-5",
+          "output": "5"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C009",
+      "type": "coding",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "title": "Operator workout",
+      "prompt": "Read two integers. Print (on four lines): their sum, product, remainder (a % b), and power (a ** b). Assume b is nonzero and exponent is nonnegative.",
+      "starter": "a = int(input())\nb = int(input())",
+      "hint": "Use +, *, % and **.",
+      "solution": "a = int(input())\nb = int(input())\nprint(a + b)\nprint(a * b)\nprint(a % b)\nprint(a ** b)",
+      "samples": [
+        {
+          "input": "10\n3",
+          "output": "13\n30\n1\n1000"
+        },
+        {
+          "input": "5\n2",
+          "output": "7\n10\n1\n25"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        6
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C010",
+      "type": "coding",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "title": "Discount plus tax",
+      "prompt": "Read a price, discount percentage, and tax percentage (one per line). Apply discount first, then tax. Print the final amount rounded to two decimals.",
+      "starter": "price = float(input())\ndiscount = float(input())\ntax = float(input())",
+      "hint": "final = price * (1 - discount/100) * (1 + tax/100).",
+      "solution": "price = float(input())\ndiscount = float(input())\ntax = float(input())\nfinal = price * (1 - discount / 100) * (1 + tax / 100)\nprint(round(final, 2))",
+      "samples": [
+        {
+          "input": "100\n20\n10",
+          "output": "88.0"
+        },
+        {
+          "input": "200\n25\n5",
+          "output": "157.5"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        11
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C011",
+      "type": "coding",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "title": "Exchange two variables",
+      "prompt": "Assign a=12, b=34, swap their values without hardcoding swapped numbers, and print them.",
+      "starter": "a = 12\nb = 34",
+      "hint": "Python can unpack a tuple on the right side.",
+      "solution": "a = 12\nb = 34\na, b = b, a\nprint(a, b)",
+      "samples": [
+        {
+          "input": "(none)",
+          "output": "34 12"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        3
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C012",
+      "type": "coding",
+      "topic": "types",
+      "difficulty": "Intermediate",
+      "title": "Type detective",
+      "prompt": "Create one example each of int, float, str, bool, NoneType and complex. Print only their type names (`int`, etc.) on separate lines, without using six hardcoded type-name strings.",
+      "starter": "",
+      "hint": "Use type(value).__name__.",
+      "solution": "values = [5, 2.5, \"hello\", True, None, 2+3j]\nfor value in values:\n    print(type(value).__name__)",
+      "samples": [
+        {
+          "input": "(none)",
+          "output": "int\nfloat\nstr\nbool\nNoneType\ncomplex"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        4
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C013",
+      "type": "coding",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "title": "Base converter",
+      "prompt": "Read a decimal integer and print its hexadecimal string and octal string on separate lines.",
+      "starter": "n = int(input())",
+      "hint": "The lecture lists hex and oct.",
+      "solution": "n = int(input())\nprint(hex(n))\nprint(oct(n))",
+      "samples": [
+        {
+          "input": "255",
+          "output": "0xff\n0o377"
+        },
+        {
+          "input": "8",
+          "output": "0x8\n0o10"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        9
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C014",
+      "type": "coding",
+      "topic": "casting",
+      "difficulty": "Intermediate",
+      "title": "Unicode character tool",
+      "prompt": "Read a single character and print its Unicode integer code point. Then use chr to print the character again from that number.",
+      "starter": "character = input()",
+      "hint": "ord converts character to code point; chr performs the reverse.",
+      "solution": "character = input()\ncode = ord(character)\nprint(code)\nprint(chr(code))",
+      "samples": [
+        {
+          "input": "A",
+          "output": "65\nA"
+        },
+        {
+          "input": "é",
+          "output": "233\né"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        9
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C015",
+      "type": "coding",
+      "topic": "input",
+      "difficulty": "Intermediate",
+      "title": "Age next year",
+      "prompt": "Read an age as integer input and print the age next year as `Next year: N`.",
+      "starter": "age = int(input())",
+      "hint": "Compute age+1.",
+      "solution": "age = int(input())\nprint(\"Next year:\", age + 1)",
+      "samples": [
+        {
+          "input": "18",
+          "output": "Next year: 19"
+        }
+      ],
+      "source": "notes",
+      "pages": [
+        10
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C016",
+      "type": "coding",
+      "topic": "operators",
+      "difficulty": "Intermediate",
+      "title": "Positive, negative and zero",
+      "prompt": "Read an integer and print `positive`, `negative`, or `zero`, as appropriate.",
+      "starter": "number = int(input())",
+      "hint": "Use if/elif/else; these are an extension beyond the lecture.",
+      "solution": "number = int(input())\nif number > 0:\n    print(\"positive\")\nelif number < 0:\n    print(\"negative\")\nelse:\n    print(\"zero\")",
+      "samples": [
+        {
+          "input": "12",
+          "output": "positive"
+        },
+        {
+          "input": "-9",
+          "output": "negative"
+        },
+        {
+          "input": "0",
+          "output": "zero"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C017",
+      "type": "coding",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "title": "Even, odd and sign",
+      "prompt": "Read an integer. Print `even positive`, `odd negative`, or analogous label for its parity and sign; zero should print `even zero`.",
+      "starter": "n = int(input())",
+      "hint": "Use % 2 for parity; use if/elif/else for sign.",
+      "solution": "n = int(input())\nparity = \"even\" if n % 2 == 0 else \"odd\"\nsign = \"positive\" if n > 0 else \"negative\" if n < 0 else \"zero\"\nprint(parity, sign)",
+      "samples": [
+        {
+          "input": "-7",
+          "output": "odd negative"
+        },
+        {
+          "input": "0",
+          "output": "even zero"
+        },
+        {
+          "input": "14",
+          "output": "even positive"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C018",
+      "type": "coding",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "title": "Robust integer parser",
+      "prompt": "Read one line. If it represents an integer, print its double; otherwise print `Invalid integer` without crashing.",
+      "starter": "raw = input()",
+      "hint": "Use try/except ValueError to handle conversion failure.",
+      "solution": "raw = input()\ntry:\n    number = int(raw)\nexcept ValueError:\n    print(\"Invalid integer\")\nelse:\n    print(number * 2)",
+      "samples": [
+        {
+          "input": "12",
+          "output": "24"
+        },
+        {
+          "input": "hello",
+          "output": "Invalid integer"
+        },
+        {
+          "input": "-3",
+          "output": "-6"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        9
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C019",
+      "type": "coding",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "title": "Truthiness classifier",
+      "prompt": "Read text. Print whether the input is an empty string or a nonempty string. Do NOT interpret the words False or 0 specially.",
+      "starter": "text = input()",
+      "hint": "bool(text) is False only when the string is empty.",
+      "solution": "text = input()\nprint(\"nonempty\" if bool(text) else \"empty\")",
+      "samples": [
+        {
+          "input": "",
+          "output": "empty"
+        },
+        {
+          "input": "False",
+          "output": "nonempty"
+        },
+        {
+          "input": "0",
+          "output": "nonempty"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        9
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C020",
+      "type": "coding",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "title": "Safe percentage calculator",
+      "prompt": "Read numerator and denominator as floats. Print the percentage as a number with exactly two digits after the decimal, followed by %. If the denominator is zero, print `Undefined`.",
+      "starter": "numerator = float(input())\ndenominator = float(input())",
+      "hint": "Guard against zero. Use f\"{value:.2f}%\".",
+      "solution": "numerator = float(input())\ndenominator = float(input())\nif denominator == 0:\n    print(\"Undefined\")\nelse:\n    print(f\"{numerator / denominator * 100:.2f}%\")",
+      "samples": [
+        {
+          "input": "1\n4",
+          "output": "25.00%"
+        },
+        {
+          "input": "1\n3",
+          "output": "33.33%"
+        },
+        {
+          "input": "2\n0",
+          "output": "Undefined"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        6
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C021",
+      "type": "coding",
+      "topic": "conversion",
+      "difficulty": "Advanced",
+      "title": "Floating-point equality",
+      "prompt": "Without hardcoding True, demonstrate that 0.1+0.2 and 0.3 are close enough using math.isclose. Print the result.",
+      "starter": "import math",
+      "hint": "Do not compare the floats with ==.",
+      "solution": "import math\nprint(math.isclose(0.1 + 0.2, 0.3))",
+      "samples": [
+        {
+          "input": "(none)",
+          "output": "True"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C022",
+      "type": "coding",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "title": "Leap-year classifier",
+      "prompt": "Read a year. Print True only for Gregorian leap years (divisible by 4, except centuries must be divisible by 400).",
+      "starter": "year = int(input())",
+      "hint": "Condition: divisible by 400 OR (divisible by 4 AND not by 100).",
+      "solution": "year = int(input())\nprint((year % 400 == 0) or (year % 4 == 0 and year % 100 != 0))",
+      "samples": [
+        {
+          "input": "2000",
+          "output": "True"
+        },
+        {
+          "input": "1900",
+          "output": "False"
+        },
+        {
+          "input": "2024",
+          "output": "True"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        7
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C023",
+      "type": "coding",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "title": "Deduplicate numeric inputs",
+      "prompt": "Read a single line of comma-separated integers. Print the number of distinct integers. Ignore leading and trailing spaces around each number.",
+      "starter": "raw = input()",
+      "hint": "split(\",\"), strip(), int(), then set().",
+      "solution": "raw = input()\nnumbers = [int(part.strip()) for part in raw.split(\",\")]\nprint(len(set(numbers)))",
+      "samples": [
+        {
+          "input": "1, 2,2, 3",
+          "output": "3"
+        },
+        {
+          "input": "-1,-1,0",
+          "output": "2"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        9
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C024",
+      "type": "coding",
+      "topic": "casting",
+      "difficulty": "Advanced",
+      "title": "Text-based binary converter",
+      "prompt": "Read a binary-number string (e.g. 101101). Print its decimal value, plus its hex and oct strings. Invalid strings should print `Invalid binary`.",
+      "starter": "raw = input()",
+      "hint": "int(raw, 2) understands base 2; catch ValueError.",
+      "solution": "raw = input()\ntry:\n    value = int(raw, 2)\nexcept ValueError:\n    print(\"Invalid binary\")\nelse:\n    print(value)\n    print(hex(value))\n    print(oct(value))",
+      "samples": [
+        {
+          "input": "101101",
+          "output": "45\n0x2d\n0o55"
+        },
+        {
+          "input": "102",
+          "output": "Invalid binary"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        9
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C025",
+      "type": "coding",
+      "topic": "input",
+      "difficulty": "Advanced",
+      "title": "Invoice total with rounding",
+      "prompt": "Read quantity as int, unit price as float, and tax percentage as float. Print the invoice total prefixed with `₹` with exactly two decimal digits.",
+      "starter": "qty = int(input())\nunit_price = float(input())\ntax_pct = float(input())",
+      "hint": "Compute qty * unit_price * (1 + tax_pct / 100), then format to .2f.",
+      "solution": "qty = int(input())\nunit_price = float(input())\ntax_pct = float(input())\ntotal = qty * unit_price * (1 + tax_pct / 100)\nprint(f\"₹{total:.2f}\")",
+      "samples": [
+        {
+          "input": "3\n19.99\n18",
+          "output": "₹70.76"
+        },
+        {
+          "input": "2\n50\n10",
+          "output": "₹110.00"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        10
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C026",
+      "type": "coding",
+      "topic": "operators",
+      "difficulty": "Advanced",
+      "title": "Short-circuit safety",
+      "prompt": "Read the string on one line. Print True only if it is nonempty AND its first character is a digit, without ever raising IndexError for an empty string.",
+      "starter": "text = input()",
+      "hint": "and short-circuits. Use text and text[0].isdigit(), wrapped with bool if needed.",
+      "solution": "text = input()\nprint(bool(text and text[0].isdigit()))",
+      "samples": [
+        {
+          "input": "3cats",
+          "output": "True"
+        },
+        {
+          "input": "cats3",
+          "output": "False"
+        },
+        {
+          "input": "",
+          "output": "False"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        7
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C027",
+      "type": "coding",
+      "topic": "types",
+      "difficulty": "Advanced",
+      "title": "Investigate Boolean arithmetic",
+      "prompt": "Print three lines: True + True, the value of True == 1, and whether True is an instance of int. Do not hardcode the output.",
+      "starter": "",
+      "hint": "Try +, ==, and isinstance().",
+      "solution": "print(True + True)\nprint(True == 1)\nprint(isinstance(True, int))",
+      "samples": [
+        {
+          "input": "(none)",
+          "output": "2\nTrue\nTrue"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        4
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    },
+    {
+      "id": "L1-C028",
+      "type": "coding",
+      "topic": "conversion",
+      "difficulty": "Advanced",
+      "title": "Is a number nearly an integer?",
+      "prompt": "Read one float. Print True if it differs from the nearest integer by no more than 1e-9, otherwise False.",
+      "starter": "value = float(input())",
+      "hint": "Use abs(value-round(value)) <= 1e-9. Avoid direct float comparison.",
+      "solution": "value = float(input())\nprint(abs(value - round(value)) <= 1e-9)",
+      "samples": [
+        {
+          "input": "2.0",
+          "output": "True"
+        },
+        {
+          "input": "2.0000000001",
+          "output": "True"
+        },
+        {
+          "input": "2.2",
+          "output": "False"
+        }
+      ],
+      "source": "extension",
+      "pages": [
+        8
+      ],
+      "rubric": "Test the supplied examples and at least one edge case in VS Code. Mark “Solved” only when your code works without copying the solution."
+    }
+  ]
+}
