@@ -1,9 +1,11 @@
+# v5 uses CSS design tokens in ui_style.py for its in-app light/dark toggle.
+# Streamlit's native baseline remains light; CSS themes the visible components.
 [theme]
 base = "light"
-primaryColor = "#5c4de3"
-backgroundColor = "#f6f8fd"
+primaryColor = "#5140cd"
+backgroundColor = "#edf2fa"
 secondaryBackgroundColor = "#ffffff"
-textColor = "#16243e"
+textColor = "#172338"
 font = "sans serif"
 
 [server]

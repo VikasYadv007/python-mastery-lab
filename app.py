@@ -1,4 +1,4 @@
-"""Python Mastery Lab — polished, responsive Streamlit experience.
+"""Python Mastery Lab — v7 top-navigation learning workspace.
 
 Run: python -m streamlit run app.py
 Database, question IDs and pack schema are unchanged from the original app.
@@ -27,7 +27,7 @@ st.set_page_config(
     page_title="Python Mastery Lab · Study Workspace",
     page_icon="🐍",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
     menu_items={"About": "Python Mastery Lab: local practice or password-protected cloud progress."},
 )
 def secret_value(key: str) -> str:
@@ -55,11 +55,11 @@ ALL_CODE = [q for p in PACKS.values() for q in p.get("challenges", [])]
 Q_LOOKUP = {q["id"]: q for q in ALL_MCQ + ALL_CODE}
 PAGES = [
     ("home", "Overview"),
-    ("quiz", "Quiz arena"),
-    ("coding", "Coding dojo"),
-    ("review", "Review lab"),
-    ("progress", "My progress"),
-    ("packs", "Lecture library"),
+    ("quiz", "Quiz Arena"),
+    ("coding", "Coding"),
+    ("review", "Review"),
+    ("progress", "Progress"),
+    ("packs", "Lectures"),
 ]
 
 # Store the appearance in the URL as well as Streamlit session state.
@@ -165,49 +165,54 @@ def go_to(page: str) -> None:
 
 
 def cloud_login() -> str:
-    """Require a password on every new browser session, isolate each learner."""
+    """Require a password per new browser session; retain theme controls on sign-in."""
     if not cloud.is_cloud():
         return ""
     username = st.session_state.get("cloud_username")
     if username:
         return username
 
-    hero("Private learning / Account", "Welcome back", "Sign in to access your personal sessions, notes and revision history. Your progress is stored securely in PostgreSQL.")
-    tab_login, tab_create = st.tabs(["Sign in", "Create an account"])
-    with tab_login:
-        with st.form("cloud_signin", clear_on_submit=True):
-            user = st.text_input("Username", key="signin_username", max_chars=30)
-            password = st.text_input("Password", type="password", key="signin_password")
-            submitted = st.form_submit_button("Sign in", type="primary", use_container_width=True)
-        if submitted:
-            if core.authenticate_user(user, password):
-                st.session_state["cloud_username"] = core.normalize_username(user)
-                st.rerun()
-            else:
-                st.error("Incorrect username or password.")
-    with tab_create:
-        if not secret_value("REGISTRATION_CODE"):
-            st.info("New accounts are invite-only. Ask the app owner to create your account.")
-        else:
-            with st.form("cloud_signup", clear_on_submit=True):
-                new_user = st.text_input("Choose a username (3–30 characters)")
-                new_password = st.text_input("New password (at least 10 characters)", type="password")
-                repeated = st.text_input("Confirm password", type="password")
-                invite = st.text_input("Private invitation code", type="password")
-                sign_up = st.form_submit_button("Create account", type="primary", use_container_width=True)
-            if sign_up:
-                if not hmac.compare_digest(invite, secret_value("REGISTRATION_CODE")):
-                    st.error("Invalid invitation code.")
-                elif new_password != repeated:
-                    st.error("Passwords don't match.")
+    # The same header and circular theme control appear on the sign-in screen.
+    site_header(None)
+
+    hero("Your progress, protected", "Welcome back", "Sign in to continue your practice, saved quizzes, notes, and revision plan. Your progress is stored in PostgreSQL, independently of redeployments.")
+    outer_left, middle, outer_right = st.columns([1, 2.1, 1])
+    with middle:
+        tab_login, tab_create = st.tabs(["Sign in", "Create an account"])
+        with tab_login:
+            with st.form("cloud_signin", clear_on_submit=True):
+                user = st.text_input("Username", key="signin_username", max_chars=30)
+                password = st.text_input("Password", type="password", key="signin_password")
+                submitted = st.form_submit_button("Sign in", type="primary", use_container_width=False)
+            if submitted:
+                if core.authenticate_user(user, password):
+                    st.session_state["cloud_username"] = core.normalize_username(user)
+                    st.rerun()
                 else:
-                    try:
-                        st.session_state["cloud_username"] = core.register_user(new_user, new_password)
-                        st.success("Account created. Opening your workspace.")
-                        st.rerun()
-                    except ValueError as exc:
-                        st.error(str(exc))
-    st.caption("Passwords are hashed before storage. Login is required again after a full browser refresh for security.")
+                    st.error("Incorrect username or password.")
+        with tab_create:
+            if not secret_value("REGISTRATION_CODE"):
+                st.info("New accounts are invite-only. Ask the app owner to create your account.")
+            else:
+                with st.form("cloud_signup", clear_on_submit=True):
+                    new_user = st.text_input("Choose a username (3–30 characters)")
+                    new_password = st.text_input("New password (at least 10 characters)", type="password")
+                    repeated = st.text_input("Confirm password", type="password")
+                    invite = st.text_input("Private invitation code", type="password")
+                    sign_up = st.form_submit_button("Create account", type="primary", use_container_width=False)
+                if sign_up:
+                    if not hmac.compare_digest(invite, secret_value("REGISTRATION_CODE")):
+                        st.error("Invalid invitation code.")
+                    elif new_password != repeated:
+                        st.error("Passwords don't match.")
+                    else:
+                        try:
+                            st.session_state["cloud_username"] = core.register_user(new_user, new_password)
+                            st.success("Account created. Opening your workspace.")
+                            st.rerun()
+                        except ValueError as exc:
+                            st.error(str(exc))
+        st.caption("Passwords are hashed before storage. You'll sign in again after a full browser refresh.")
     st.stop()
 
 
@@ -236,7 +241,7 @@ def item_meta(q: dict) -> None:
 
 def bookmark_control(profile: str, q: dict) -> None:
     marked = q["id"] in core.bookmarked_ids(profile)
-    if st.button("Bookmarked" if marked else "Bookmark", key="mark_" + q["id"], use_container_width=True,
+    if st.button("Bookmarked" if marked else "Bookmark", key="mark_" + q["id"], use_container_width=False,
                  help="Keep this question in your Bookmarked review queue"):
         core.bookmark(profile, q["id"], not marked)
         st.rerun()
@@ -275,15 +280,16 @@ def quiz_session(profile: str, sid: str) -> None:
             section("Worth revisiting", "These questions stay in your learning history.")
             for q in missed[:12]:
                 st.markdown(f'<div class="review-item"><b>{esc(q["prompt"])}</b><p>{esc(q["topic_name"])} · {esc(q["id"])}</p></div>', unsafe_allow_html=True)
-        first, second = st.columns(2)
-        with first:
-            if st.button("Back to overview", type="primary", use_container_width=True):
-                st.session_state.pop("active_session_id", None)
-                go_to("home")
-        with second:
-            if st.button("Browse answered questions", use_container_width=True):
-                core.change_position(profile, sid, 0)
-                st.rerun()
+        with st.container(key="completed_actions"):
+            first, second = st.columns(2, gap="small")
+            with first:
+                if st.button("Back to overview", type="primary", use_container_width=False):
+                    st.session_state.pop("active_session_id", None)
+                    go_to("home")
+            with second:
+                if st.button("Browse answered questions", use_container_width=False):
+                    core.change_position(profile, sid, 0)
+                    st.rerun()
         return
 
     q = Q_LOOKUP.get(queue[index])
@@ -295,33 +301,35 @@ def quiz_session(profile: str, sid: str) -> None:
     with top_left:
         st.markdown(
             f'<div class="question-label">Practice session · Question {index + 1} of {len(queue)}</div>'
-            f'<div class="question-topline">{esc(q["topic_name"])} · All answers saved locally</div>',
+            f'<div class="question-topline">{esc(q["topic_name"])} · '
+            f'{"Saved to your cloud account" if cloud.is_cloud() else "Saved on this computer"}</div>', 
             unsafe_allow_html=True,
         )
     with top_right:
-        if st.button("Save & leave", key="leave_session", use_container_width=True):
+        if st.button("Save & leave", key="leave_session", use_container_width=False):
             st.session_state.pop("active_session_id", None)
             go_to("quiz")
     st.progress(index / len(queue))
-    left, right = st.columns([3, 1.25], vertical_alignment="bottom")
-    with left:
-        st.markdown(f'<div class="question-heading">{esc(q["prompt"])}</div>', unsafe_allow_html=True)
-    with right:
-        bookmark_control(profile, q)
-    item_meta(q)
-    st.caption(f"Question ID: {q['id']}")
-    if q.get("code"):
-        st.code(q["code"], language="python")
+    with st.container(border=True, key="question_intro"):
+        left, right = st.columns([3, 1.25], vertical_alignment="bottom")
+        with left:
+            st.markdown(f'<div class="question-heading">{esc(q["prompt"])}</div>', unsafe_allow_html=True)
+        with right:
+            bookmark_control(profile, q)
+        item_meta(q)
+        st.caption(f"Question ID: {q['id']}")
+        if q.get("code"):
+            st.code(q["code"], language="python")
 
     if previous is None:
         with st.form(f"answer_form_{sid}_{q['id']}", clear_on_submit=False):
-            st.markdown("**Choose one answer**")
+            st.markdown('<div class="option-title">Select the best answer</div>', unsafe_allow_html=True)
             choice = st.radio(
                 "Answer options", range(4), index=None,
                 format_func=lambda j: f'{"ABCD"[j]}.  {q["options"][j]}',
                 key=f"choice_{sid}_{q['id']}", label_visibility="collapsed",
             )
-            submitted = st.form_submit_button("Check my answer", type="primary", use_container_width=True)
+            submitted = st.form_submit_button("Check my answer", type="primary", use_container_width=False)
             if submitted:
                 if choice is None:
                     st.warning("Select an option first.")
@@ -352,16 +360,17 @@ def quiz_session(profile: str, sid: str) -> None:
             st.caption("Related concepts: " + ", ".join(q["tags"]))
     personal_note(profile, q)
     st.divider()
-    back, next_btn = st.columns([1, 2])
-    with back:
-        if st.button("Previous", disabled=index == 0, use_container_width=True):
-            core.change_position(profile, sid, index - 1)
-            st.rerun()
-    with next_btn:
-        label = "Finish session" if index + 1 == len(queue) else "Next question"
-        if st.button(label, type="primary", disabled=previous is None, use_container_width=True):
-            core.change_position(profile, sid, index + 1)
-            st.rerun()
+    with st.container(key="question_actions"):
+        back, next_btn = st.columns(2, gap="small")
+        with back:
+            if st.button("Previous", disabled=index == 0, use_container_width=False):
+                core.change_position(profile, sid, index - 1)
+                st.rerun()
+        with next_btn:
+            label = "Finish session" if index + 1 == len(queue) else "Next question"
+            if st.button(label, type="primary", disabled=previous is None, use_container_width=False):
+                core.change_position(profile, sid, index + 1)
+                st.rerun()
 
 
 def quiz_page(profile: str) -> None:
@@ -379,7 +388,7 @@ def quiz_page(profile: str) -> None:
         with a:
             selected_sid = st.selectbox("Unfinished sessions", list(choices), format_func=lambda k: choices[k], label_visibility="collapsed")
         with b:
-            if st.button("Resume session", type="primary", use_container_width=True):
+            if st.button("Resume session", type="primary", use_container_width=False):
                 st.session_state["active_session_id"] = selected_sid
                 st.rerun()
 
@@ -435,7 +444,7 @@ def quiz_page(profile: str) -> None:
     with right:
         count = st.number_input("Questions per session", min_value=1, max_value=max(1, len(pool)),
                                 value=min(15, max(1, len(pool))), step=1)
-    if st.button("Start practicing", type="primary", use_container_width=True, disabled=not pool):
+    if st.button("Start practicing", type="primary", use_container_width=False, disabled=not pool):
         start_session(profile, base, mode, int(count), {"topic": topic_name, "source": source})
     if not pool:
         st.info("Nothing matches this mode yet. Try Smart Mix, All, or broaden your filters.")
@@ -443,7 +452,7 @@ def quiz_page(profile: str) -> None:
 
 def overview_page(profile: str) -> None:
     hero("Your personal study workspace", "Master Python, one question at a time.",
-         "From the lecture basics to tricky interview questions. Explore, practice, track progress, and turn mistakes into strengths.")
+         "Practice lecture concepts, tackle tricky questions, and track improvement in one focused workspace.")
     met = core.profile_metrics(profile)
     a, b, c, d = st.columns(4)
     a.metric("Questions available", len(ALL_MCQ))
@@ -460,15 +469,15 @@ def overview_page(profile: str) -> None:
             f'{chip(most_recent["configuration"].get("mode", "Practice"), "chip-teal")}</div>',
             unsafe_allow_html=True,
         )
-        if st.button("Continue saved session", type="primary", use_container_width=True):
+        if st.button("Continue saved session", type="primary", use_container_width=False):
             st.session_state["active_session_id"] = most_recent["id"]
             go_to("quiz")
 
     section("What would you like to do?", "Everything you need for deliberate Python practice, in one place.")
     cards = [
-        ("quiz", "Practice questions", "Mix all topics or drill a single concept, from beginner to interview-level traps.", "Open quiz arena", "quiz"),
-        ("coding", "Solve coding tasks", "Work in VS Code, compare examples and save drafts for your next session.", "Open coding dojo", "coding"),
-        ("review", "Review mistakes", "Revisit missed, due, and bookmarked questions with full explanations.", "Open revision lab", "review"),
+        ("quiz", "Practice questions", "Train a topic or test yourself with mixed questions.", "Open quiz arena", "quiz"),
+        ("coding", "Solve coding tasks", "Solve in VS Code and save your working drafts.", "Open coding dojo", "coding"),
+        ("review", "Review mistakes", "Revisit mistakes, due questions, and bookmarks.", "Open revision lab", "review"),
     ]
     cols = st.columns(3)
     for col, (icon, title, descr, button, page) in zip(cols, cards):
@@ -476,19 +485,20 @@ def overview_page(profile: str) -> None:
             with st.container(border=True, key="feature_" + page):
                 st.markdown(f'<div class="feature-icon">{svg_icon(icon, 24)}</div><div class="feature-title">{esc(title)}</div>'
                             f'<div class="feature-description">{esc(descr)}</div>', unsafe_allow_html=True)
-                if st.button(button, key="card_" + page, use_container_width=True):
+                if st.button(button, key="card_" + page, use_container_width=False):
                     go_to(page)
 
-    section("Instant practice", "One click to train your recall or revisit an earlier mistake.")
-    left, right = st.columns(2)
-    with left:
-        if st.button("Start a 15-question Smart Mix", type="primary", use_container_width=True, disabled=not ALL_MCQ):
-            start_session(profile, ALL_MCQ, "Smart Mix", 15)
-    with right:
-        missed = {qid for qid, x in core.mastery_map(profile).items() if not x["last_correct"]}
-        candidates = [q for q in ALL_MCQ if q["id"] in missed]
-        if st.button("Practice previous mistakes", use_container_width=True, disabled=not candidates):
-            start_session(profile, candidates, "All", 15)
+    section("Instant practice", "Start a focused session with a single click.")
+    with st.container(key="quick_actions"):
+        quick_start, quick_review = st.columns(2, gap="small")
+        with quick_start:
+            if st.button("15-question Smart Mix", type="primary", use_container_width=False, disabled=not ALL_MCQ):
+                start_session(profile, ALL_MCQ, "Smart Mix", 15)
+        with quick_review:
+            missed = {qid for qid, x in core.mastery_map(profile).items() if not x["last_correct"]}
+            candidates = [q for q in ALL_MCQ if q["id"] in missed]
+            if st.button("Retry previous mistakes", use_container_width=False, disabled=not candidates):
+                start_session(profile, candidates, "All", 15)
 
     section("Your lecture shelf", "Click a lecture to see the concepts inside it.")
     for pack in PACKS.values():
@@ -548,27 +558,29 @@ def coding_page(profile: str) -> None:
         st.session_state[draft_key] = core.get_draft(profile, qid) or q["starter"]
     st.text_area("Your Python code", key=draft_key, height=260, label_visibility="collapsed",
                  placeholder="# Paste your tested VS Code solution here")
-    save_col, reveal_col = st.columns(2)
-    with save_col:
-        if st.button("Save my draft", use_container_width=True, key="save_draft_" + qid):
-            core.save_draft(profile, qid, st.session_state[draft_key])
-            st.toast("Draft saved locally", icon="✅")
-    with reveal_col:
-        if st.button("Reveal reference solution", use_container_width=True, key="reveal_code_" + qid):
-            st.session_state["revealed_" + qid] = True
+    with st.container(key="code_actions"):
+        save_col, reveal_col = st.columns(2, gap="small")
+        with save_col:
+            if st.button("Save my draft", use_container_width=False, key="save_draft_" + qid):
+                core.save_draft(profile, qid, st.session_state[draft_key])
+                st.toast("Draft saved to your cloud account" if cloud.is_cloud() else "Draft saved on this computer", icon="✅")
+        with reveal_col:
+            if st.button("Reveal reference solution", use_container_width=False, key="reveal_code_" + qid):
+                st.session_state["revealed_" + qid] = True
     if st.session_state.get("revealed_" + qid):
         section("Reference solution", "Read and understand it before grading your attempt.")
         st.code(q["solution"], language="python")
         st.info(q["rubric"])
-        yes, no = st.columns(2)
-        with yes:
-            if st.button("Solved independently", type="primary", use_container_width=True, key="grade_yes_" + qid):
-                core.grade_code(profile, q, True, st.session_state[draft_key])
-                st.toast("Recorded as solved", icon="✅")
-        with no:
-            if st.button("Need more practice", use_container_width=True, key="grade_no_" + qid):
-                core.grade_code(profile, q, False, st.session_state[draft_key])
-                st.toast("Added to your practice queue", icon="🔁")
+        with st.container(key="grading_actions"):
+            yes, no = st.columns(2, gap="small")
+            with yes:
+                if st.button("Solved independently", type="primary", use_container_width=False, key="grade_yes_" + qid):
+                    core.grade_code(profile, q, True, st.session_state[draft_key])
+                    st.toast("Recorded as solved", icon="✅")
+            with no:
+                if st.button("Need more practice", use_container_width=False, key="grade_no_" + qid):
+                    core.grade_code(profile, q, False, st.session_state[draft_key])
+                    st.toast("Added to your practice queue", icon="🔁")
     personal_note(profile, q)
 
 
@@ -584,7 +596,7 @@ def review_list(profile: str, ids: set[str], title: str) -> None:
             )
         if len(questions) > 12:
             st.caption(f"Showing 12 of {len(questions)} questions. The practice session pulls from the full queue.")
-        if st.button(f"Start {title.lower()} practice", type="primary", use_container_width=True, key="review_start_" + title):
+        if st.button(f"Start {title.lower()} practice", type="primary", use_container_width=False, key="review_start_" + title):
             start_session(profile, questions, "All", 20, {"queue": title})
     if code:
         with st.expander(f"{len(code)} coding challenges in this queue"):
@@ -671,22 +683,23 @@ def progress_page(profile: str) -> None:
     else:
         st.caption("No saved sessions yet.")
     section("Export & backup", "Download a private copy of your complete study history, including answers, notes and drafts.")
-    left, right = st.columns(2)
-    with left:
-        st.download_button("Export attempts (CSV)", data=attempts_export_ist(profile),
-                           file_name=f'python_attempts_{profile.replace(" ", "_")}.csv',
-                           mime="text/csv", use_container_width=True)
-    with right:
-        if cloud.is_cloud():
-            st.download_button("Download full progress backup (ZIP)", data=core.export_all_progress(profile),
-                               file_name=f'python_mastery_{profile}_backup.zip',
-                               mime="application/zip", use_container_width=True)
-        else:
-            dbfile = core.DEFAULT_DB
-            if dbfile.exists():
-                st.download_button("Download progress database", data=consistent_db_backup(),
-                                   file_name="python_mastery_progress.sqlite3",
-                                   mime="application/octet-stream", use_container_width=True)
+    with st.container(key="export_actions"):
+        left, right = st.columns(2, gap="small")
+        with left:
+            st.download_button("Export attempts (CSV)", data=attempts_export_ist(profile),
+                               file_name=f'python_attempts_{profile.replace(" ", "_")}.csv',
+                               mime="text/csv", use_container_width=False)
+        with right:
+            if cloud.is_cloud():
+                st.download_button("Download full progress backup (ZIP)", data=core.export_all_progress(profile),
+                                   file_name=f'python_mastery_{profile}_backup.zip',
+                                   mime="application/zip", use_container_width=False)
+            else:
+                dbfile = core.DEFAULT_DB
+                if dbfile.exists():
+                    st.download_button("Download progress database", data=consistent_db_backup(),
+                                       file_name="python_mastery_progress.sqlite3",
+                                       mime="application/octet-stream", use_container_width=False)
     if cloud.is_cloud():
         st.caption("Your study progress and imported lecture packs are stored in hosted PostgreSQL, independently from app deployments. Save an offline backup periodically. All displayed timestamps use IST (UTC+05:30).")
     else:
@@ -732,78 +745,78 @@ def packs_page(profile: str) -> None:
         st.caption("Use a different pack_id and globally unique question IDs for every lecture.")
 
 
-def sidebar() -> tuple[str, str]:
-    with st.sidebar:
-        st.markdown(
-            '<div class="sidebar-brand"><span class="brand-symbol">' + svg_icon("coding", 25, "#fff") + '</span>'
-            '<div><div class="brand-name">Python Mastery Lab</div>'
-            '<div class="brand-caption">YOUR STUDY WORKSPACE</div></div></div>',
-            unsafe_allow_html=True,
-        )
-        if cloud.is_cloud():
-            profile = st.session_state["cloud_username"]
-            st.caption("Signed in: " + profile)
-            if st.button("Sign out", use_container_width=True):
-                current_theme = st.session_state.get("dark_mode", False)
-                for key in list(st.session_state.keys()):
-                    del st.session_state[key]
-                st.session_state["dark_mode"] = current_theme
+def site_header(profile: str | None) -> None:
+    """Sidebar-free, consistently sized top navigation and theme button.
+
+    Buttons are native Streamlit controls; all navigation works without custom JS.
+    The active section and appearance survive reruns and browser refreshes via URL.
+    """
+    with st.container(key="site_header"):
+        brand_col, account_col, theme_col = st.columns([5.5, 1.7, 0.55], gap="small", vertical_alignment="center")
+        with brand_col:
+            st.markdown(
+                '<div class="site-brand">'
+                f'<span class="site-brand-icon">{svg_icon("coding", 22, "#ffffff")}</span>'
+                '<span class="site-brand-text"><b>Python Mastery Lab</b>'
+                '<small>Practice · Improve · Repeat</small></span></div>',
+                unsafe_allow_html=True,
+            )
+        with account_col:
+            if profile is not None:
+                with st.popover(f"{profile[:21]}", use_container_width=False, help="Account and sign-out options"):
+                    st.markdown(f'<div class="account-popover-title">Signed in as <b>{esc(profile)}</b></div>', unsafe_allow_html=True)
+                    if cloud.is_cloud():
+                        if st.button("Sign out", key="header_signout", use_container_width=False):
+                            current_theme = st.session_state.get("dark_mode", False)
+                            for k in list(st.session_state.keys()):
+                                del st.session_state[k]
+                            st.session_state["dark_mode"] = current_theme
+                            st.rerun()
+                    else:
+                        st.text_input("Learner profile", key="offline_profile", max_chars=60,
+                                      help="Local SQLite learner name. Add DATABASE_URL for secure cloud accounts.")
+                        st.caption("Offline SQLite storage")
+            else:
+                st.markdown('<span class="visitor-note">Personal workspace</span>', unsafe_allow_html=True)
+        with theme_col:
+            next_theme = "light" if st.session_state["dark_mode"] else "dark"
+            if st.button(f"Switch to {next_theme} mode", key="theme_circle", use_container_width=False,
+                         help=f"Switch to {next_theme} appearance"):
+                st.session_state["dark_mode"] = not st.session_state["dark_mode"]
+                persist_theme()
                 st.rerun()
-        else:
-            profile = st.text_input(
-                "Learner profile", value="My Python practice", max_chars=60,
-                help="Offline-only profile. Enable cloud DATABASE_URL for protected online accounts.",
-            ).strip() or "My Python practice"
-            st.warning("Offline SQLite mode. Online persistence requires DATABASE_URL.", icon="⚠️")
-        st.markdown('<div class="brand-caption" style="margin:19px 0 11px">EXPLORE</div>', unsafe_allow_html=True)
-        if st.session_state.get("current_page") not in {id_ for id_, _ in PAGES}:
-            requested = str(st.query_params.get("page", "home"))
-            st.session_state["current_page"] = requested if requested in {id_ for id_, _ in PAGES} else "home"
-        for id_, title in PAGES:
-            if st.button(title, key="nav_" + id_,
-                         type="primary" if id_ == st.session_state["current_page"] else "secondary",
-                         use_container_width=True):
-                go_to(id_)
-        st.divider()
-        brief = core.profile_metrics(profile)
-        st.markdown(
-            f'<div class="side-stats"><span>LEARNING SNAPSHOT</span>'
-            f'<div style="margin-top:9px"><strong>{brief["correct"]}</strong> correct / '
-            f'<strong>{brief["attempts"]}</strong> attempts</div>'
-            f'<div style="margin-top:7px"><span>{brief["due"]} due · {brief["missed"]} need practice</span></div></div>',
-            unsafe_allow_html=True,
-        )
-        st.markdown('<div class="sidebar-small" style="margin-top:16px">' +
-                    ('Your answers and notes are saved to your cloud account.' if cloud.is_cloud() else 'Offline data is stored on this computer.') + ' The top Menu always remains available.</div>',
-                    unsafe_allow_html=True)
-    return profile, st.session_state["current_page"]
+
+        if profile is not None:
+            with st.container(key="top_navigation"):
+                nav_columns = st.columns(len(PAGES), gap="small")
+                for col, (page_id, title) in zip(nav_columns, PAGES):
+                    with col:
+                        if st.button(title, key="top_nav_" + page_id,
+                                     type="primary" if page_id == st.session_state["current_page"] else "secondary",
+                                     use_container_width=False):
+                            go_to(page_id)
 
 
-def top_toolbar() -> None:
-    """Navigation remains usable after the native sidebar has been closed."""
-    left, center, right = st.columns([1.15, 3, 1.55], vertical_alignment="center", gap="small")
-    with left:
-        with st.popover("Menu"):
-            st.caption("Jump to a section — works even when the sidebar is closed")
-            for page_id, title in PAGES:
-                if st.button(title, use_container_width=True, key="top_nav_" + page_id,
-                             type="primary" if page_id == st.session_state["current_page"] else "secondary"):
-                    go_to(page_id)
-    with center:
-        current_label = next((label for key, label in PAGES if key == st.session_state["current_page"]), "Workspace")
-        st.markdown(
-            '<div class="topbar"><span class="topbar-overline">Python mastery lab</span>'
-            f'<span class="topbar-title">{esc(current_label)}</span></div>', unsafe_allow_html=True,
-        )
-    with right:
-        st.toggle("Dark mode", key="dark_mode", on_change=persist_theme,
-                  help="Switch the complete interface between light and dark mode. Your choice stays in the page URL after refresh.")
+def selected_page() -> str:
+    valid = {page for page, _ in PAGES}
+    if "current_page" not in st.session_state:
+        requested = str(st.query_params.get("page", "home"))
+        st.session_state["current_page"] = requested if requested in valid else "home"
+    if st.session_state["current_page"] not in valid:
+        st.session_state["current_page"] = "home"
+    return st.session_state["current_page"]
 
 
 if cloud.is_cloud():
     cloud_login()
-profile, page = sidebar()
-top_toolbar()
+    profile = st.session_state["cloud_username"]
+else:
+    if "offline_profile" not in st.session_state:
+        st.session_state["offline_profile"] = "My Python practice"
+    profile = st.session_state["offline_profile"].strip() or "My Python practice"
+
+page = selected_page()
+site_header(profile)
 if page == "home":
     overview_page(profile)
 elif page == "quiz":
