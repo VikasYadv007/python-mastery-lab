@@ -80,7 +80,7 @@ CSS = r'''
 /* v7 — Compact, sidebar-free study workspace.  All colors use theme tokens. */
 :root { __THEME_VARS__ color-scheme: __COLOR_SCHEME__; }
 *,*::before,*::after {box-sizing:border-box;}
-html {scroll-behavior:smooth;}
+html {scroll-behavior:smooth;scrollbar-gutter:stable;}
 html,body,[data-testid="stApp"],[data-testid="stAppViewContainer"] {
  font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif!important;
 }
@@ -330,7 +330,7 @@ input[type="radio"],input[type="checkbox"]{accent-color:var(--accent-solid)!impo
  line-height:1.2!important;font-weight:800!important;letter-spacing:-.042em!important;}
 .hero p{font-size:.9rem!important;max-width:730px;margin:0!important;color:var(--muted)!important;line-height:1.54!important;}
 .eyebrow{color:var(--accent-text);font-size:.7rem;font-weight:750;letter-spacing:.07em;text-transform:uppercase;}
-.section-title{font-size:1.06rem;color:var(--text);font-weight:780;letter-spacing:-.025em;margin:22px 0 7px;}
+[data-testid="stMain"] h2.section-title{font-size:1.06rem!important;color:var(--text);font-weight:780;letter-spacing:-.025em;margin:22px 0 7px;padding:0;}
 .section-sub{font-size:.85rem;color:var(--muted);line-height:1.5;margin:0 0 11px;}
 .feature-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;
  background:var(--accent-soft);color:var(--accent-text);border:1px solid var(--accent-stroke);margin:0 0 10px;}
@@ -478,6 +478,40 @@ input[type="radio"],input[type="checkbox"]{accent-color:var(--accent-solid)!impo
 [data-testid="stMain"] [class*="st-key-theme_circle"] button:hover{
  background:var(--accent-soft)!important;border-color:var(--accent-stroke)!important;}
 
+/* Keep long questions and code inside their surface, including narrow phones. */
+.question-heading,.review-item,.option-card,.lead-strip,.hero{overflow-wrap:anywhere;}
+.option-card > span:last-child{min-width:0;white-space:pre-wrap;}
+.option-letter{flex-shrink:0;}
+[data-testid="stTextArea"] textarea[aria-label="Your Python code"]{
+ font-family:Consolas,"Cascadia Code",monospace!important;font-size:.9rem!important;
+ tab-size:4;line-height:1.65!important;}
+[data-testid="stRadio"] label:has(input:focus-visible),
+[data-testid="stMain"] summary:focus-visible,.table-scroll:focus-visible{
+ outline:3px solid var(--accent-stroke)!important;outline-offset:3px;}
+[data-testid="stMain"] button:focus-visible,[data-testid="stMain"] input:focus-visible,
+[data-testid="stMain"] textarea:focus-visible{
+ outline-color:var(--accent-stroke)!important;}
+[data-baseweb="select"]:focus-within{outline:2px solid var(--accent-stroke);outline-offset:2px;border-radius:10px;}
+[data-testid="stMain"] [data-testid="stAlert"] p{color:var(--text)!important;}
+[data-testid="stMain"] .stButton button:disabled:hover{
+ background:var(--surface-2)!important;border-color:var(--border-strong)!important;}
+.hero{border-top:3px solid var(--accent-stroke);}
+[class*="st-key-feature_"]{transition:border-color .16s ease,box-shadow .16s ease;}
+[class*="st-key-feature_"]:hover{box-shadow:0 5px 18px var(--shadow)!important;}
+/* After the navigation guards so mobile hit areas are not overwritten. */
+@media (max-width:640px){
+ [data-testid="stMain"] [class*="st-key-top_navigation"] .stButton button{
+  width:100%!important;min-height:44px!important;height:auto!important;
+  padding:9px 5px!important;white-space:normal!important;}
+ [data-testid="stMain"] .stButton button,
+ [data-testid="stMain"] .stFormSubmitButton button,
+ [data-testid="stMain"] .stDownloadButton button{min-height:44px!important;}
+ [data-testid="stTextInput"] input,[data-testid="stTextArea"] textarea,
+ [data-testid="stNumberInput"] input{font-size:16px!important;}
+ [data-testid="stForm"]{padding:14px!important;}
+ .site-brand-text b{white-space:normal;}
+ .ui-table td{min-width:100px;}
+}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
 '''
 

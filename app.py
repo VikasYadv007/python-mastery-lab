@@ -16,6 +16,7 @@ import tempfile
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from collections import Counter, defaultdict
+from contextlib import closing
 from pathlib import Path
 
 import streamlit as st
@@ -117,8 +118,8 @@ def consistent_db_backup() -> bytes:
         return b""
     with tempfile.TemporaryDirectory() as tmpdir:
         copy = Path(tmpdir) / "progress.sqlite3"
-        with sqlite3.connect(str(source)) as source_db:
-            with sqlite3.connect(str(copy)) as backup_db:
+        with closing(sqlite3.connect(str(source))) as source_db:
+            with closing(sqlite3.connect(str(copy))) as backup_db:
                 source_db.backup(backup_db)
         return copy.read_bytes()
 
@@ -153,7 +154,7 @@ def hero(eyebrow: str, title: str, subtitle: str) -> None:
 
 
 def section(title: str, caption: str = "") -> None:
-    st.markdown(f'<div class="section-title">{esc(title)}</div>', unsafe_allow_html=True)
+    st.markdown(f'<h2 class="section-title">{esc(title)}</h2>', unsafe_allow_html=True)
     if caption:
         st.markdown(f'<div class="section-sub">{esc(caption)}</div>', unsafe_allow_html=True)
 
@@ -175,7 +176,7 @@ def cloud_login() -> str:
     # The same header and circular theme control appear on the sign-in screen.
     site_header(None)
 
-    hero("Your progress, protected", "Welcome back", "Sign in to continue your practice, saved quizzes, notes, and revision plan. Your progress is stored in PostgreSQL, independently of redeployments.")
+    hero("Your progress, protected", "Welcome back", "Sign in to continue your practice, saved quizzes, notes, and revision plan. Your progress stays with your account.")
     outer_left, middle, outer_right = st.columns([1, 2.1, 1])
     with middle:
         tab_login, tab_create = st.tabs(["Sign in", "Create an account"])
@@ -247,16 +248,24 @@ def bookmark_control(profile: str, q: dict) -> None:
         st.rerun()
 
 
+def save_editor(profile: str, qid: str, key: str, kind: str) -> None:
+    """Persist committed editor changes before navigation removes the widget."""
+    save = core.save_draft if kind == "draft" else core.save_note
+    save(profile, qid, st.session_state[key])
+
+
 def personal_note(profile: str, q: dict) -> None:
     with st.expander("Personal revision note"):
-        field_key = "note_" + q["id"]
+        field_key = f"note_{profile}_{q['id']}"
         if field_key not in st.session_state:
             st.session_state[field_key] = core.get_note(profile, q["id"])
         st.text_area("Explain the idea in your own words", key=field_key, height=118,
+                     on_change=save_editor, args=(profile, q["id"], field_key, "note"),
                      placeholder="What makes this question tricky? How will you recognize it next time?")
         if st.button("Save note", key="save_note_" + q["id"]):
             core.save_note(profile, q["id"], st.session_state[field_key])
             st.toast("Revision note saved", icon="✅")
+        st.caption("Changes save when you leave the text field. Use Save note to save immediately.")
 
 
 def quiz_session(profile: str, sid: str) -> None:
@@ -280,6 +289,8 @@ def quiz_session(profile: str, sid: str) -> None:
             section("Worth revisiting", "These questions stay in your learning history.")
             for q in missed[:12]:
                 st.markdown(f'<div class="review-item"><b>{esc(q["prompt"])}</b><p>{esc(q["topic_name"])} · {esc(q["id"])}</p></div>', unsafe_allow_html=True)
+            if st.button("Practice these mistakes again", key="retry_session_mistakes"):
+                start_session(profile, missed, "All", len(missed))
         with st.container(key="completed_actions"):
             first, second = st.columns(2, gap="small")
             with first:
@@ -309,7 +320,7 @@ def quiz_session(profile: str, sid: str) -> None:
         if st.button("Save & leave", key="leave_session", use_container_width=False):
             st.session_state.pop("active_session_id", None)
             go_to("quiz")
-    st.progress(index / len(queue))
+    st.progress((index + int(previous is not None)) / len(queue))
     with st.container(border=True, key="question_intro"):
         left, right = st.columns([3, 1.25], vertical_alignment="bottom")
         with left:
@@ -457,7 +468,7 @@ def overview_page(profile: str) -> None:
     a, b, c, d = st.columns(4)
     a.metric("Questions available", len(ALL_MCQ))
     b.metric("Coding challenges", len(ALL_CODE))
-    c.metric("Your accuracy", f'{met["accuracy"]}%')
+    c.metric("Your accuracy", f'{met["accuracy"]}%' if met["attempts"] else "—")
     d.metric("Need revision", met["missed"])
 
     sessions = core.recent_sessions(profile, limit=10, unfinished=True)
@@ -473,6 +484,18 @@ def overview_page(profile: str) -> None:
             st.session_state["active_session_id"] = most_recent["id"]
             go_to("quiz")
 
+    section("Instant practice", "Start a focused session with a single click.")
+    with st.container(key="quick_actions"):
+        quick_start, quick_review = st.columns(2, gap="small")
+        with quick_start:
+            if st.button("15-question Smart Mix", type="primary", use_container_width=False, disabled=not ALL_MCQ):
+                start_session(profile, ALL_MCQ, "Smart Mix", 15)
+        with quick_review:
+            missed = {qid for qid, x in core.mastery_map(profile).items() if not x["last_correct"]}
+            candidates = [q for q in ALL_MCQ if q["id"] in missed]
+            if st.button("Retry previous mistakes", use_container_width=False, disabled=not candidates):
+                start_session(profile, candidates, "All", 15)
+
     section("What would you like to do?", "Everything you need for deliberate Python practice, in one place.")
     cards = [
         ("quiz", "Practice questions", "Train a topic or test yourself with mixed questions.", "Open quiz arena", "quiz"),
@@ -487,18 +510,6 @@ def overview_page(profile: str) -> None:
                             f'<div class="feature-description">{esc(descr)}</div>', unsafe_allow_html=True)
                 if st.button(button, key="card_" + page, use_container_width=False):
                     go_to(page)
-
-    section("Instant practice", "Start a focused session with a single click.")
-    with st.container(key="quick_actions"):
-        quick_start, quick_review = st.columns(2, gap="small")
-        with quick_start:
-            if st.button("15-question Smart Mix", type="primary", use_container_width=False, disabled=not ALL_MCQ):
-                start_session(profile, ALL_MCQ, "Smart Mix", 15)
-        with quick_review:
-            missed = {qid for qid, x in core.mastery_map(profile).items() if not x["last_correct"]}
-            candidates = [q for q in ALL_MCQ if q["id"] in missed]
-            if st.button("Retry previous mistakes", use_container_width=False, disabled=not candidates):
-                start_session(profile, candidates, "All", 15)
 
     section("Your lecture shelf", "Click a lecture to see the concepts inside it.")
     for pack in PACKS.values():
@@ -553,11 +564,14 @@ def coding_page(profile: str) -> None:
         with st.expander("Reveal a hint"):
             st.write(q["hint"])
     section("Your working solution", "Drafts save to your profile; this app never executes code. Run and test it in VS Code first.")
-    draft_key = "draft_" + qid
+    draft_key = f"draft_{profile}_{qid}"
     if draft_key not in st.session_state:
-        st.session_state[draft_key] = core.get_draft(profile, qid) or q["starter"]
+        saved_draft = core.get_draft(profile, qid)
+        st.session_state[draft_key] = q["starter"] if saved_draft is None else saved_draft
     st.text_area("Your Python code", key=draft_key, height=260, label_visibility="collapsed",
+                 on_change=save_editor, args=(profile, qid, draft_key, "draft"),
                  placeholder="# Paste your tested VS Code solution here")
+    st.caption("Changes save when you leave the editor. Run your code in VS Code to test it.")
     with st.container(key="code_actions"):
         save_col, reveal_col = st.columns(2, gap="small")
         with save_col:
@@ -566,8 +580,10 @@ def coding_page(profile: str) -> None:
                 st.toast("Draft saved to your cloud account" if cloud.is_cloud() else "Draft saved on this computer", icon="✅")
         with reveal_col:
             if st.button("Reveal reference solution", use_container_width=False, key="reveal_code_" + qid):
-                st.session_state["revealed_" + qid] = True
-    if st.session_state.get("revealed_" + qid):
+                st.session_state[f"revealed_{profile}_{qid}"] = True
+    st.download_button("Download Python file", st.session_state[draft_key],
+                       file_name=f"{qid}.py", mime="text/x-python", key="download_code_" + qid)
+    if st.session_state.get(f"revealed_{profile}_{qid}"):
         section("Reference solution", "Read and understand it before grading your attempt.")
         st.code(q["solution"], language="python")
         st.info(q["rubric"])
@@ -602,6 +618,12 @@ def review_list(profile: str, ids: set[str], title: str) -> None:
         with st.expander(f"{len(code)} coding challenges in this queue"):
             for q in code[:18]:
                 st.markdown(f'**{q["title"]}**  ·  {q["difficulty"]}')
+            if st.button("Practice coding challenges", key="review_code_" + title):
+                st.session_state["code_pack"] = "All lectures"
+                st.session_state["code_level"] = "Any difficulty"
+                st.session_state["code_status"] = "All tasks"
+                st.session_state["challenge_picker"] = code[0]["id"]
+                go_to("coding")
     if not questions and not code:
         st.markdown('<div class="empty">Your queue is empty. Great time to explore new questions!</div>', unsafe_allow_html=True)
 
@@ -646,7 +668,7 @@ def progress_page(profile: str) -> None:
     metric = core.profile_metrics(profile)
     a, b, c, d = st.columns(4)
     a.metric("Total attempts", metric["attempts"])
-    b.metric("Accuracy", f'{metric["accuracy"]}%')
+    b.metric("Accuracy", f'{metric["accuracy"]}%' if metric["attempts"] else "—")
     c.metric("Unique questions", metric["studied"])
     d.metric("Mastered · 3+ streak", metric["mastered"])
     records = core.attempt_history(profile, 100000)
@@ -682,7 +704,7 @@ def progress_page(profile: str) -> None:
                     "Status": "Finished" if s["completed_at"] else "In progress"} for s in sessions])
     else:
         st.caption("No saved sessions yet.")
-    section("Export & backup", "Download a private copy of your complete study history, including answers, notes and drafts.")
+    section("Export & backup", "Export answers as CSV, or download a full backup that also includes notes and drafts.")
     with st.container(key="export_actions"):
         left, right = st.columns(2, gap="small")
         with left:
@@ -703,11 +725,14 @@ def progress_page(profile: str) -> None:
     if cloud.is_cloud():
         st.caption("Your study progress and imported lecture packs are stored in hosted PostgreSQL, independently from app deployments. Save an offline backup periodically. All displayed timestamps use IST (UTC+05:30).")
     else:
+        st.caption("The database backup includes all learner profiles on this computer.")
         st.caption("Offline mode: saved progress is in data/progress.sqlite3 on this computer, not on Streamlit Cloud. All displayed timestamps use IST (UTC+05:30).")
 
 
 def packs_page(profile: str) -> None:
     hero("Library / Expand your knowledge", "Your lecture library", "All lecture packs in one learning workspace. Add new topics without resetting your progress.")
+    if not PACKS:
+        st.info("Your library is empty. Import a JSON lecture pack below to begin practicing.")
     for pack in PACKS.values():
         with st.container(border=True, key="pack_" + pack["pack_id"]):
             st.markdown(f'### {pack["title"]}')
@@ -816,6 +841,9 @@ else:
     profile = st.session_state["offline_profile"].strip() or "My Python practice"
 
 page = selected_page()
+if st.session_state.get("workspace_profile", profile) != profile:
+    st.session_state.pop("active_session_id", None)
+st.session_state["workspace_profile"] = profile
 site_header(profile)
 if page == "home":
     overview_page(profile)
