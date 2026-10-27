@@ -3,80 +3,129 @@
 Only frontend CSS and self-contained SVG assets live here. No remote styles,
 fonts, scripts, user data or browser state. Used by app.py in both modes.
 """
+
 from __future__ import annotations
 
 import urllib.parse
 
 ICON_PATHS = {
-    'home': '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V10Z"/><path d="M9 21v-7h6v7"/>',
-    'quiz': '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8 12 2.5 2.5L16 9"/>',
-    'coding': '<path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"/>',
-    'review': '<path d="M3 12a9 9 0 1 0 2.8-6.5L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/>',
-    'progress': '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-7"/>',
-    'packs': '<path d="M4 19V5a2 2 0 0 1 2-2h5a3 3 0 0 1 3 3v15a3 3 0 0 0-3-3H6a2 2 0 0 0-2 2"/><path d="M20 19V5a2 2 0 0 0-2-2h-5a3 3 0 0 0-2 3v15a3 3 0 0 1 3-3h4a2 2 0 0 1 2 2"/>',
-    'star': '<path d="m12 2 3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1L12 2Z"/>',
-    'menu': '<path d="M4 6h16M4 12h16M4 18h16"/>',
-    'moon': '<path d="M20.2 15A8.5 8.5 0 0 1 9 3.8 8.5 8.5 0 1 0 20.2 15Z"/>',
-    'sun': '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>',
-    'arrow': '<path d="M4 12h16m-6-6 6 6-6 6"/>',
-    'check': '<path d="m5 12 5 5L20 7"/>',
-    'spark': '<path d="m12 3 1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9L12 3Z"/>',
+    "home": '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V10Z"/><path d="M9 21v-7h6v7"/>',
+    "quiz": '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="m8 12 2.5 2.5L16 9"/>',
+    "coding": '<path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"/>',
+    "review": '<path d="M3 12a9 9 0 1 0 2.8-6.5L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/>',
+    "progress": '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-7"/>',
+    "packs": '<path d="M4 19V5a2 2 0 0 1 2-2h5a3 3 0 0 1 3 3v15a3 3 0 0 0-3-3H6a2 2 0 0 0-2 2"/><path d="M20 19V5a2 2 0 0 0-2-2h-5a3 3 0 0 0-2 3v15a3 3 0 0 1 3-3h4a2 2 0 0 1 2 2"/>',
+    "star": '<path d="m12 2 3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1L12 2Z"/>',
+    "menu": '<path d="M4 6h16M4 12h16M4 18h16"/>',
+    "moon": '<path d="M20.2 15A8.5 8.5 0 0 1 9 3.8 8.5 8.5 0 1 0 20.2 15Z"/>',
+    "sun": '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>',
+    "arrow": '<path d="M4 12h16m-6-6 6 6-6 6"/>',
+    "check": '<path d="m5 12 5 5L20 7"/>',
+    "spark": '<path d="m12 3 1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9L12 3Z"/>',
 }
 
 
-def svg_icon(name: str, size: int = 20, color: str = 'currentColor', class_name: str = '') -> str:
+def svg_icon(name: str, size: int = 20, color: str = "currentColor", class_name: str = "") -> str:
     if name not in ICON_PATHS:
         raise ValueError(name)
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" class="{class_name}" aria-hidden="true"'
         f' width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}"'
         f' stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">'
-        f'{ICON_PATHS[name]}</svg>'
+        f"{ICON_PATHS[name]}</svg>"
     )
 
 
-def svg_css(name: str, color: str = '#64748b') -> str:
-    return 'data:image/svg+xml,' + urllib.parse.quote(svg_icon(name, color=color), safe='')
+def svg_css(name: str, color: str = "#64748b") -> str:
+    return "data:image/svg+xml," + urllib.parse.quote(svg_icon(name, color=color), safe="")
 
 
 THEMES = {
-    'light': {
-        '--bg': '#f4f7fb', '--bg-radial': '#ebf0fb', '--surface': '#ffffff',
-        '--surface-2': '#f0f4fa', '--surface-3': '#e5ebf5',
-        '--text': '#122037', '--muted': '#4a5d75', '--subtle': '#586d86',
-        '--border': '#d6e0ed', '--border-strong': '#b9c9db',
-        '--accent': '#2655c8', '--accent-solid': '#2459d6', '--accent-hover': '#1947b6',
-        '--accent-soft': '#eaf0ff', '--accent-stroke': '#829fec', '--accent-text': '#244ca9',
-        '--success-bg': '#e7f8f0', '--success-text': '#086344', '--success-border': '#82cbae',
-        '--wrong-bg': '#fff0f1', '--wrong-text': '#99263a', '--wrong-border': '#eba0ae',
-        '--warning-bg': '#fff5dc', '--warning-text': '#78520d', '--warning-border': '#d8b96a',
-        '--hero-start': '#ffffff', '--hero-mid': '#ffffff', '--hero-end': '#f4f7ff',
-        '--sidebar': '#ffffff', '--side-text': '#182843', '--side-muted': '#4d617c',
-        '--side-hover': '#f2f6fc', '--side-border': '#d8e1ee',
-        '--sidebar-highlight': '#eef3ff', '--header': '#ffffffed',
-        '--shadow': 'rgba(27,52,96,.055)', '--shadow-deep': 'rgba(27,52,96,.12)',
-        '--focus': 'rgba(36,89,214,.23)', '--code-bg': '#f3f6fa',
+    "light": {
+        "--bg": "#f4f7fb",
+        "--bg-radial": "#ebf0fb",
+        "--surface": "#ffffff",
+        "--surface-2": "#f0f4fa",
+        "--surface-3": "#e5ebf5",
+        "--text": "#122037",
+        "--muted": "#4a5d75",
+        "--subtle": "#586d86",
+        "--border": "#d6e0ed",
+        "--border-strong": "#b9c9db",
+        "--accent": "#2655c8",
+        "--accent-solid": "#2459d6",
+        "--accent-hover": "#1947b6",
+        "--accent-soft": "#eaf0ff",
+        "--accent-stroke": "#829fec",
+        "--accent-text": "#244ca9",
+        "--success-bg": "#e7f8f0",
+        "--success-text": "#086344",
+        "--success-border": "#82cbae",
+        "--wrong-bg": "#fff0f1",
+        "--wrong-text": "#99263a",
+        "--wrong-border": "#eba0ae",
+        "--warning-bg": "#fff5dc",
+        "--warning-text": "#78520d",
+        "--warning-border": "#d8b96a",
+        "--hero-start": "#ffffff",
+        "--hero-mid": "#ffffff",
+        "--hero-end": "#f4f7ff",
+        "--sidebar": "#ffffff",
+        "--side-text": "#182843",
+        "--side-muted": "#4d617c",
+        "--side-hover": "#f2f6fc",
+        "--side-border": "#d8e1ee",
+        "--sidebar-highlight": "#eef3ff",
+        "--header": "#ffffffed",
+        "--shadow": "rgba(27,52,96,.055)",
+        "--shadow-deep": "rgba(27,52,96,.12)",
+        "--focus": "rgba(36,89,214,.23)",
+        "--code-bg": "#f3f6fa",
     },
-    'dark': {
-        '--bg': '#0c1422', '--bg-radial': '#17253d', '--surface': '#172338',
-        '--surface-2': '#203149', '--surface-3': '#2a3e59',
-        '--text': '#f4f7ff', '--muted': '#c1cde0', '--subtle': '#adbfda',
-        '--border': '#364961', '--border-strong': '#5a708e',
-        '--accent': '#b4c8ff', '--accent-solid': '#2957d1', '--accent-hover': '#1f46b3',
-        '--accent-soft': '#213759', '--accent-stroke': '#7599f5', '--accent-text': '#d7e1ff',
-        '--success-bg': '#15382f', '--success-text': '#99edd0', '--success-border': '#418971',
-        '--wrong-bg': '#452730', '--wrong-text': '#ffbac5', '--wrong-border': '#b45e73',
-        '--warning-bg': '#3f341e', '--warning-text': '#ffe4ac', '--warning-border': '#967944',
-        '--hero-start': '#1d2c44', '--hero-mid': '#1a2a42', '--hero-end': '#1b3045',
-        '--sidebar': '#111d30', '--side-text': '#f4f7ff', '--side-muted': '#c1cde0',
-        '--side-hover': '#263a55', '--side-border': '#31445e',
-        '--sidebar-highlight': '#203551', '--header': '#121d30ed',
-        '--shadow': 'rgba(0,0,0,.16)', '--shadow-deep': 'rgba(0,0,0,.33)',
-        '--focus': 'rgba(129,165,255,.31)', '--code-bg': '#101b2c',
+    "dark": {
+        "--bg": "#0c1422",
+        "--bg-radial": "#17253d",
+        "--surface": "#172338",
+        "--surface-2": "#203149",
+        "--surface-3": "#2a3e59",
+        "--text": "#f4f7ff",
+        "--muted": "#c1cde0",
+        "--subtle": "#adbfda",
+        "--border": "#364961",
+        "--border-strong": "#5a708e",
+        "--accent": "#b4c8ff",
+        "--accent-solid": "#2957d1",
+        "--accent-hover": "#1f46b3",
+        "--accent-soft": "#213759",
+        "--accent-stroke": "#7599f5",
+        "--accent-text": "#d7e1ff",
+        "--success-bg": "#15382f",
+        "--success-text": "#99edd0",
+        "--success-border": "#418971",
+        "--wrong-bg": "#452730",
+        "--wrong-text": "#ffbac5",
+        "--wrong-border": "#b45e73",
+        "--warning-bg": "#3f341e",
+        "--warning-text": "#ffe4ac",
+        "--warning-border": "#967944",
+        "--hero-start": "#1d2c44",
+        "--hero-mid": "#1a2a42",
+        "--hero-end": "#1b3045",
+        "--sidebar": "#111d30",
+        "--side-text": "#f4f7ff",
+        "--side-muted": "#c1cde0",
+        "--side-hover": "#263a55",
+        "--side-border": "#31445e",
+        "--sidebar-highlight": "#203551",
+        "--header": "#121d30ed",
+        "--shadow": "rgba(0,0,0,.16)",
+        "--shadow-deep": "rgba(0,0,0,.33)",
+        "--focus": "rgba(129,165,255,.31)",
+        "--code-bg": "#101b2c",
     },
 }
 
-CSS = r'''
+CSS = r"""
 /* v7 — Compact, sidebar-free study workspace.  All colors use theme tokens. */
 :root { __THEME_VARS__ color-scheme: __COLOR_SCHEME__; }
 *,*::before,*::after {box-sizing:border-box;}
@@ -513,7 +562,7 @@ input[type="radio"],input[type="checkbox"]{accent-color:var(--accent-solid)!impo
  .ui-table td{min-width:100px;}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
-'''
+"""
 
 
 def style(theme: str) -> str:
@@ -521,6 +570,12 @@ def style(theme: str) -> str:
     if theme not in THEMES:
         raise ValueError(f"Unknown theme: {theme}")
     vars_ = dict(THEMES[theme])
-    vars_["--theme-icon"] = f'url("{svg_css("sun" if theme == "dark" else "moon", vars_["--text"])}")'
-    blob = ';'.join(f'{key}:{value}' for key, value in vars_.items()) + ';'
-    return '<style>' + CSS.replace('__THEME_VARS__', blob).replace('__COLOR_SCHEME__', theme) + '</style>'
+    vars_["--theme-icon"] = (
+        f'url("{svg_css("sun" if theme == "dark" else "moon", vars_["--text"])}")'
+    )
+    blob = ";".join(f"{key}:{value}" for key, value in vars_.items()) + ";"
+    return (
+        "<style>"
+        + CSS.replace("__THEME_VARS__", blob).replace("__COLOR_SCHEME__", theme)
+        + "</style>"
+    )

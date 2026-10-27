@@ -1,4 +1,4 @@
-# Python Mastery Lab v4 — persistent cloud storage for 1–3 learners
+# Cloud setup and progress migration
 
 **What is implemented:** hosted PostgreSQL (Supabase or other managed Postgres), password-protected separate accounts, automatic non-destructive table creation, persistent session/attempt/mastery/bookmark/note/draft records, persistent uploaded JSON lecture packs, full ZIP backup, SQLite-to-cloud transfer and backup restore.
 
@@ -30,7 +30,9 @@ The app now uses the **hosted database whenever `DATABASE_URL` exists**. If it i
 
 ## 3. Install the new code, push to GitHub, redeploy
 
-**Back up your current `data/progress.sqlite3` somewhere safe first.** For the upgrade-only ZIP, replace `app.py`, `quiz_core.py`, and `requirements.txt`, and add the new `cloud_storage.py`, `migrate_progress.py`, `restore_backup.py`, `manage_users.py`, `.gitignore`, and documentation. Leave `packs/` intact. Do not overwrite your `data/` directory. With the full ZIP, copy the project source but **keep your old progress database**.
+Back up your current progress first. Update the full source tree, including
+`mastery_lab/`, owner tools, and requirements. Keep your existing `data/`, secrets,
+and question IDs. Run all commands below from the repository root.
 
 Open the project folder in the VS Code terminal:
 
