@@ -1,11 +1,11 @@
-# v5 uses CSS design tokens in ui_style.py for its in-app light/dark toggle.
+# Python Glass uses CSS design tokens in ui_style.py for its in-app light/dark toggle.
 # Streamlit's native baseline remains light; CSS themes the visible components.
 [theme]
 base = "light"
-primaryColor = "#5140cd"
-backgroundColor = "#edf2fa"
+primaryColor = "#3776ab"
+backgroundColor = "#f0f4f6"
 secondaryBackgroundColor = "#ffffff"
-textColor = "#172338"
+textColor = "#172e42"
 font = "sans serif"
 
 [server]

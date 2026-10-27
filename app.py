@@ -1,4 +1,4 @@
-"""Python Mastery Lab — v7 top-navigation learning workspace.
+"""Python Mastery Lab — Python Glass learning workspace.
 
 Run: python -m streamlit run app.py
 Database, question IDs and pack schema are unchanged from the original app.
@@ -20,7 +20,7 @@ import cloud_storage as cloud
 import quiz_core as core
 from mastery_lab.presentation import as_ist as as_ist
 from mastery_lab.presentation import sqlite_backup
-from ui_style import style, svg_icon
+from ui_style import python_mark, style, svg_icon
 
 st.set_page_config(
     page_title="Python Mastery Lab · Study Workspace",
@@ -141,8 +141,16 @@ def chip(text: str, kind: str = "") -> str:
 
 def hero(eyebrow: str, title: str, subtitle: str) -> None:
     st.markdown(
-        f'<div class="hero"><div class="eyebrow">{esc(eyebrow)}</div>'
-        f"<h1>{esc(title)}</h1><p>{esc(subtitle)}</p></div>",
+        f'<div class="hero"><div class="hero-copy"><div class="eyebrow">{esc(eyebrow)}</div>'
+        f"<h1>{esc(title)}</h1><p>{esc(subtitle)}</p>"
+        '<div class="hero-signature"><span class="status-dot"></span> A little practice. A lot of possibility.</div></div>'
+        '<div class="hero-code" aria-hidden="true"><div class="editor-bar"><span></span><span></span><span></span>'
+        '<small>your_next_chapter.py</small></div><div class="editor-body">'
+        '<div><i>01</i><span class="syntax-comment"># Small steps. Real progress.</span></div>'
+        '<div><i>02</i>skills = [<span class="syntax-string">"learn"</span>, <span class="syntax-string">"build"</span>]</div>'
+        '<div><i>03</i><span class="syntax-keyword">for</span> step <span class="syntax-keyword">in</span> skills:</div>'
+        '<div><i>04</i>&nbsp;&nbsp;&nbsp;&nbsp;<span class="syntax-function">print</span>(step)</div></div>'
+        f'<div class="editor-footer">{python_mark(18)} Python · Made for curious minds</div></div></div>',
         unsafe_allow_html=True,
     )
 
@@ -1053,22 +1061,34 @@ def site_header(profile: str | None) -> None:
     The active section and appearance survive reruns and browser refreshes via URL.
     """
     with st.container(key="site_header"):
-        brand_col, account_col, theme_col = st.columns(
-            [5.5, 1.7, 0.55], gap="small", vertical_alignment="center"
+        brand_col, theme_col, account_col = st.columns(
+            [5.5, 0.55, 1.9], gap="small", vertical_alignment="center"
         )
         with brand_col:
             st.markdown(
                 '<div class="site-brand">'
-                f'<span class="site-brand-icon">{svg_icon("coding", 22, "#ffffff")}</span>'
+                f'<span class="site-brand-icon">{python_mark(38)}</span>'
                 '<span class="site-brand-text"><b>Python Mastery Lab</b>'
-                "<small>Practice · Improve · Repeat</small></span></div>",
+                "<small>YOUR PYTHON WORKSPACE</small></span></div>",
                 unsafe_allow_html=True,
             )
+        with theme_col:
+            next_theme = "light" if st.session_state["dark_mode"] else "dark"
+            if st.button(
+                f"Switch to {next_theme} mode",
+                key="theme_circle",
+                use_container_width=False,
+                help=f"Switch to {next_theme} appearance",
+            ):
+                st.session_state["dark_mode"] = not st.session_state["dark_mode"]
+                persist_theme()
+                st.rerun()
+
         with account_col:
             if profile is not None:
                 with st.popover(
                     f"{profile[:21]}",
-                    use_container_width=False,
+                    use_container_width=True,
                     help="Account and sign-out options",
                 ):
                     st.markdown(
@@ -1094,17 +1114,6 @@ def site_header(profile: str | None) -> None:
                 st.markdown(
                     '<span class="visitor-note">Personal workspace</span>', unsafe_allow_html=True
                 )
-        with theme_col:
-            next_theme = "light" if st.session_state["dark_mode"] else "dark"
-            if st.button(
-                f"Switch to {next_theme} mode",
-                key="theme_circle",
-                use_container_width=False,
-                help=f"Switch to {next_theme} appearance",
-            ):
-                st.session_state["dark_mode"] = not st.session_state["dark_mode"]
-                persist_theme()
-                st.rerun()
 
         if profile is not None:
             with st.container(key="top_navigation"):

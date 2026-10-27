@@ -20,6 +20,10 @@ Open [localhost:8501](http://localhost:8501). Stop the server with `Ctrl+C`.
 For the standard-library-only terminal quiz, run `python terminal_quiz.py`.
 Terminal mode supports local profiles; unset `DATABASE_URL` before using it.
 
+The Python Glass interface uses frosted panels, Python blue and gold accents, and
+matching light/dark appearances. The top-right account selector has the appearance
+switch immediately to its left.
+
 ## Study workflow
 
 - **Overview:** start Smart Mix practice or continue a saved quiz.
