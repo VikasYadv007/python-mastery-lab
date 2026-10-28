@@ -21,9 +21,14 @@ from mastery_lab.transfer import insert_progress
 def pack_body(pack: dict) -> dict:
     """Compare original pack content without loader-added display metadata."""
     result = copy.deepcopy(pack)
-    for question in result.get("questions", []) + result.get("challenges", []):
-        for field in ("pack_id", "pack_title", "topic_name"):
-            question.pop(field, None)
+    for kind, items in (
+        ("mcq", result.get("questions", [])),
+        ("coding", result.get("challenges", [])),
+    ):
+        for question in items:
+            question["type"] = kind
+            for field in ("pack_id", "pack_title", "topic_name"):
+                question.pop(field, None)
     return result
 
 

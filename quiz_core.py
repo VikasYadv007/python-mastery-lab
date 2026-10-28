@@ -68,10 +68,21 @@ def load_packs() -> dict[str, dict]:
         validate_pack(pack)
         if pack["pack_id"] in loaded:
             raise ValueError(f"Duplicate pack_id: {pack['pack_id']}")
+        item_types = {
+            q["id"]: kind
+            for kind, items in (
+                ("mcq", pack.get("questions", [])),
+                ("coding", pack.get("challenges", [])),
+            )
+            for q in items
+        }
         for q in pack.get("questions", []) + pack.get("challenges", []):
             if q["id"] in ids:
                 raise ValueError(f"Question ID {q['id']} exists in multiple packs.")
             ids.add(q["id"])
+            # Older valid packs omitted this optional display field. The list
+            # containing an item is the schema's authoritative question kind.
+            q["type"] = item_types[q["id"]]
             q["pack_id"] = pack["pack_id"]
             q["pack_title"] = pack["title"]
             q["topic_name"] = next(t["name"] for t in pack["topics"] if t["id"] == q["topic"])
@@ -428,17 +439,24 @@ def profile_metrics(profile: str, database: Path | str = DEFAULT_DB) -> dict:
     }
 
 
-def attempt_history(profile: str, limit=200, database: Path | str = DEFAULT_DB) -> list[dict]:
+def attempt_history(
+    profile: str, limit: int | None = 200, database: Path | str = DEFAULT_DB
+) -> list[dict]:
+    """Read a bounded history, or the full history with limit=None, for this profile."""
+    query = "SELECT * FROM attempts WHERE profile=? ORDER BY created_at DESC, id DESC"
+    params = (profile,)
+    if limit is not None:
+        if type(limit) is not int or limit < 1:
+            raise ValueError("History limit must be a positive integer or None.")
+        query += " LIMIT ?"
+        params = (profile, limit)
     with db(database) as con:
-        rows = con.execute(
-            "SELECT * FROM attempts WHERE profile=? ORDER BY created_at DESC, id DESC LIMIT ?",
-            (profile, limit),
-        ).fetchall()
+        rows = con.execute(query, params).fetchall()
     return [dict(x) for x in rows]
 
 
 def attempts_csv(profile: str, database: Path | str = DEFAULT_DB) -> bytes:
-    rows = attempt_history(profile, 100000, database)
+    rows = attempt_history(profile, None, database)
     f = io.StringIO()
     writer = csv.DictWriter(
         f,

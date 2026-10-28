@@ -12,12 +12,16 @@ import html
 import io
 import json
 import os
-from collections import Counter, defaultdict
+from collections import Counter
+from datetime import UTC, datetime
 
 import streamlit as st
 
 import cloud_storage as cloud
 import quiz_core as core
+from mastery_lab import analytics
+from mastery_lab.charts import chart_spec
+from mastery_lab.overview import observatory_html, topic_summaries
 from mastery_lab.presentation import as_ist as as_ist
 from mastery_lab.presentation import sqlite_backup
 from ui_style import python_mark, style, svg_icon
@@ -108,9 +112,9 @@ def consistent_db_backup() -> bytes:
     return sqlite_backup(core.DEFAULT_DB)
 
 
-def attempts_export_ist(profile: str) -> bytes:
+def attempts_export_ist(profile: str, rows: list[dict] | None = None) -> bytes:
     """Keep original UTC column for exact ordering, add a human-friendly IST column."""
-    rows = core.attempt_history(profile, 100000)
+    rows = core.attempt_history(profile, None) if rows is None else rows
     out = io.StringIO()
     names = [
         "saved_at_ist",
@@ -572,102 +576,230 @@ def quiz_page(profile: str) -> None:
 
 
 def overview_page(profile: str) -> None:
-    hero(
-        "Your personal study workspace",
-        "Master Python, one question at a time.",
-        "Practice lecture concepts, tackle tricky questions, and track improvement in one focused workspace.",
+    current = datetime.now(UTC)
+    mastery = core.mastery_map(profile)
+    records = analytics.filtered_attempts(
+        core.attempt_history(profile, None),
+        Q_LOOKUP,
+        today=current.astimezone(analytics.IST).date(),
     )
-    met = core.profile_metrics(profile)
-    a, b, c, d = st.columns(4)
-    a.metric("Questions available", len(ALL_MCQ))
-    b.metric("Coding challenges", len(ALL_CODE))
-    c.metric("Your accuracy", f"{met['accuracy']}%" if met["attempts"] else "—")
-    d.metric("Need revision", met["missed"])
+    activity = analytics.activity_summary(records, current.astimezone(analytics.IST).date())
+    topics = topic_summaries(PACKS, mastery)
+    queues = analytics.review_queues(mastery, set(), set(Q_LOOKUP), current)
+    known = set(mastery) & set(Q_LOOKUP)
+    summary = {
+        "mcqs": len(ALL_MCQ),
+        "coding": len(ALL_CODE),
+        "total": len(Q_LOOKUP),
+        "studied": len(known),
+        "mastered": sum(mastery[qid]["streak"] >= 3 for qid in known),
+        "accuracy": activity["accuracy"],
+        "attempts": len(records),
+        "streak": activity["streak"],
+        "due": len(queues["Due now"]),
+    }
+    with st.container(key="overview_scene"):
+        # The executable source is authored in assets/overview.js. Imported pack
+        # text is escaped into inert data and is never inserted into that source.
+        st.html(
+            observatory_html(summary, topics, dark=st.session_state["dark_mode"]),
+            unsafe_allow_javascript=True,
+        )
+
+    section(
+        "Your next small step",
+        "Build a little momentum. Your progress takes care of the bigger picture.",
+    )
+    with st.container(border=True, key="home_mission"):
+        left, right = st.columns([2, 1], vertical_alignment="center")
+        with left:
+            if summary["due"]:
+                st.markdown(
+                    f'<div class="eyebrow">YOUR PERSONAL FLIGHT PLAN</div><div class="feature-title">{summary["due"]} ideas are ready for another look.</div><div class="feature-description">A short revision session can turn a familiar mistake into a reliable skill.</div>',
+                    unsafe_allow_html=True,
+                )
+            elif activity["today"]:
+                st.markdown(
+                    f'<div class="eyebrow">YOU SHOWED UP TODAY</div><div class="feature-title">{activity["today"]} attempts. One step further.</div><div class="feature-description">Keep exploring, or give the ideas a little time to settle.</div>',
+                    unsafe_allow_html=True,
+                )
+            else:
+                st.markdown(
+                    '<div class="eyebrow">BEGIN ANYWHERE</div><div class="feature-title">Your next good idea starts with a question.</div><div class="feature-description">Try a quick Smart Mix or pick a concept in the topic launchpad below.</div>',
+                    unsafe_allow_html=True,
+                )
+        with right:
+            if summary["due"]:
+                if st.button("Review what’s due", key="home_due", type="primary"):
+                    st.session_state["review_queue"] = "Due now"
+                    st.session_state["review_kind"] = "All practice"
+                    st.session_state["review_pack"] = "All lectures"
+                    st.session_state["review_topic"] = "All topics"
+                    st.session_state["review_level"] = "Any difficulty"
+                    st.session_state["review_search"] = ""
+                    go_to("review")
+            elif st.button("See your learning pulse", key="home_pulse"):
+                go_to("progress")
+        with st.container(key="quick_actions"):
+            quick_start, quick_review = st.columns(2, gap="small")
+            with quick_start:
+                if st.button(
+                    "15-question Smart Mix",
+                    type="primary",
+                    use_container_width=False,
+                    disabled=not ALL_MCQ,
+                ):
+                    start_session(profile, ALL_MCQ, "Smart Mix", 15)
+            with quick_review:
+                candidates = [q for q in ALL_MCQ if q["id"] in queues["Needs another try"]]
+                if st.button(
+                    "Retry previous mistakes", use_container_width=False, disabled=not candidates
+                ):
+                    start_session(profile, candidates, "All", 15)
 
     sessions = core.recent_sessions(profile, limit=10, unfinished=True)
     if sessions:
         most_recent = sessions[0]
-        st.markdown(
-            f'<div class="lead-strip"><div><strong>Continue your learning streak</strong><br>'
-            f"<span>Saved session · question {most_recent['position'] + 1} of {len(most_recent['queue'])}</span></div>"
-            f"{chip(most_recent['configuration'].get('mode', 'Practice'), 'chip-teal')}</div>",
-            unsafe_allow_html=True,
-        )
-        if st.button("Continue saved session", type="primary", use_container_width=False):
-            st.session_state["active_session_id"] = most_recent["id"]
-            go_to("quiz")
-
-    section("Instant practice", "Start a focused session with a single click.")
-    with st.container(key="quick_actions"):
-        quick_start, quick_review = st.columns(2, gap="small")
-        with quick_start:
-            if st.button(
-                "15-question Smart Mix",
-                type="primary",
-                use_container_width=False,
-                disabled=not ALL_MCQ,
-            ):
-                start_session(profile, ALL_MCQ, "Smart Mix", 15)
-        with quick_review:
-            missed = {qid for qid, x in core.mastery_map(profile).items() if not x["last_correct"]}
-            candidates = [q for q in ALL_MCQ if q["id"] in missed]
-            if st.button(
-                "Retry previous mistakes", use_container_width=False, disabled=not candidates
-            ):
-                start_session(profile, candidates, "All", 15)
+        with st.container(border=True, key="home_resume"):
+            left, right = st.columns([2, 1], vertical_alignment="center")
+            with left:
+                st.markdown(
+                    f'<div class="eyebrow">YOUR PLACE IS SAVED</div><div class="feature-title">Pick up your last orbit.</div><div class="feature-description">Question {most_recent["position"] + 1} of {len(most_recent["queue"])} · {esc(most_recent["configuration"].get("mode", "Practice"))}</div>',
+                    unsafe_allow_html=True,
+                )
+            with right:
+                if st.button("Continue saved session", type="primary", use_container_width=False):
+                    st.session_state["active_session_id"] = most_recent["id"]
+                    go_to("quiz")
 
     section(
-        "What would you like to do?",
-        "Everything you need for deliberate Python practice, in one place.",
+        "Choose your constellation",
+        "The animation is a playground. This launchpad connects real topics to your next practice session.",
+    )
+    if topics:
+        topic_map = {t["key"]: t for t in topics}
+        with st.container(border=True, key="home_topic_launchpad"):
+            selected = select_choice(
+                "Choose a topic to practise",
+                list(topic_map),
+                "overview_topic",
+                format_func=lambda k: f"{topic_map[k]['name']} · {topic_map[k]['lecture']}",
+            )
+            topic = topic_map[selected]
+            percentage = (
+                round(topic["studied"] * 100 / topic["questions"]) if topic["questions"] else 0
+            )
+            left, right = st.columns([1, 2], vertical_alignment="center")
+            with left:
+                st.markdown(
+                    f'<div class="home-coverage" role="meter" aria-label="Questions explored in {esc(topic["name"])}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{percentage}"><svg viewBox="0 0 140 140" aria-hidden="true"><circle class="home-ring-track" cx="70" cy="70" r="54"/><circle class="home-ring-fill" cx="70" cy="70" r="54" style="--ring-offset:{339.3 * (1 - percentage / 100):.2f}"/></svg><div><strong>{percentage}%</strong><span>explored</span></div></div>',
+                    unsafe_allow_html=True,
+                )
+            with right:
+                accuracy = f"{topic['accuracy']}%" if topic["accuracy"] is not None else "—"
+                st.markdown(
+                    f'<div class="eyebrow">TOPIC SPOTLIGHT</div><h3 class="chart-title">{esc(topic["name"])}</h3><div class="home-topic-chips">{chip(str(topic["mcqs"]) + " MCQs")}{chip(str(topic["coding"]) + " coding tasks", "chip-amber")}</div><div class="home-topic-facts"><span><b>{topic["studied"]}/{topic["questions"]}</b> explored</span><span><b>{accuracy}</b> accuracy</span><span><b>{topic["mastered"]}</b> mastered</span></div>',
+                    unsafe_allow_html=True,
+                )
+                st.caption(
+                    "Coverage counts first attempts. Accuracy includes self-assessed coding results; mastered means three correct attempts in a row."
+                )
+            candidates = [
+                q for q in Q_LOOKUP.values() if f"{q['pack_id']}:{q['topic']}" == selected
+            ]
+            mcqs = [q for q in candidates if q["type"] == "mcq"]
+            codes = [q for q in candidates if q["type"] == "coding"]
+            with st.container(key="home_topic_actions"):
+                a, b, c = st.columns(3, gap="small")
+                with a:
+                    if st.button(
+                        "Practice this topic",
+                        key="home_topic_practice",
+                        type="primary",
+                        disabled=not mcqs,
+                    ):
+                        start_session(
+                            profile,
+                            mcqs,
+                            "Smart Mix",
+                            min(10, len(mcqs)),
+                            {"topic": topic["name"], "source": "Overview constellation"},
+                        )
+                with b:
+                    if st.button(
+                        "Open a coding challenge", key="home_topic_code", disabled=not codes
+                    ):
+                        open_coding_question(codes[0]["id"])
+                with c:
+                    if st.button(
+                        "Review this topic", key="home_topic_review", disabled=not topic["studied"]
+                    ):
+                        st.session_state["review_pack"] = topic["pack_id"]
+                        st.session_state["review_topic"] = topic["name"]
+                        st.session_state["review_kind"] = "All practice"
+                        st.session_state["review_level"] = "Any difficulty"
+                        st.session_state["review_search"] = ""
+                        st.session_state["review_queue"] = (
+                            "Needs another try" if topic["missed"] else "All studied"
+                        )
+                        go_to("review")
+    else:
+        st.info("Your learning universe is empty. Import a lecture pack to start exploring.")
+        if st.button("Open the lecture library", key="home_empty_library"):
+            go_to("packs")
+
+    section(
+        "Three ways to move forward",
+        "A question, a working program, or a second look. Pick the kind of progress you need.",
     )
     cards = [
         (
             "quiz",
+            "01 / THINK IT THROUGH",
             "Practice questions",
-            "Train a topic or test yourself with mixed questions.",
+            "A focused topic or an unexpected mix. Test the idea, then understand why.",
             "Open quiz arena",
-            "quiz",
         ),
         (
             "coding",
-            "Solve coding tasks",
-            "Solve in VS Code and save your working drafts.",
+            "02 / MAKE IT REAL",
+            "Build something small",
+            "Turn a concept into a working program. Keep your drafts and test your ideas.",
             "Open coding dojo",
-            "coding",
         ),
         (
             "review",
-            "Review mistakes",
-            "Revisit mistakes, due questions, and bookmarks.",
+            "03 / CONNECT THE DOTS",
+            "Make it stick",
+            "Return to your mistakes, follow your revision plan, and see what has clicked.",
             "Open revision lab",
-            "review",
         ),
     ]
-    cols = st.columns(3)
-    for col, (icon, title, descr, button, page) in zip(cols, cards):
+    for col, (page, kicker, title, desc, button) in zip(st.columns(3), cards):
         with col:
             with st.container(border=True, key="feature_" + page):
                 st.markdown(
-                    f'<div class="feature-icon">{svg_icon(icon, 24)}</div><div class="feature-title">{esc(title)}</div>'
-                    f'<div class="feature-description">{esc(descr)}</div>',
+                    f'<div class="home-feature-kicker">{esc(kicker)}</div><div class="feature-icon">{svg_icon(page, 24)}</div><div class="feature-title">{esc(title)}</div><div class="feature-description">{esc(desc)}</div>',
                     unsafe_allow_html=True,
                 )
                 if st.button(button, key="card_" + page, use_container_width=False):
                     go_to(page)
 
-    section("Your lecture shelf", "Click a lecture to see the concepts inside it.")
+    section("Your lecture shelf", "Open a lecture to see its concepts and question coverage.")
     for pack in PACKS.values():
         with st.expander(
-            f"{pack['title']}   ·   {len(pack.get('questions', []))} MCQs   ·   {len(pack.get('challenges', []))} coding tasks"
+            f"{pack['title']} · {len(pack.get('questions', []))} MCQs · {len(pack.get('challenges', []))} coding tasks"
         ):
             counts = Counter(q["topic"] for q in pack.get("questions", []))
-            pills = "".join(
-                f'<span class="topic-pill">{esc(t["name"])} · {counts[t["id"]]}</span>'
-                for t in pack["topics"]
+            st.markdown(
+                "".join(
+                    f'<span class="topic-pill">{esc(t["name"])} · {counts[t["id"]]}</span>'
+                    for t in pack["topics"]
+                ),
+                unsafe_allow_html=True,
             )
-            st.markdown(pills, unsafe_allow_html=True)
             st.caption(
-                "Questions tagged ‘PDF material’ come from the lecture. ‘Advanced extension’ adds related tricks."
+                "PDF material follows the lecture; advanced extensions explore related tricks. Use the topic launchpad to focus your practice."
             )
 
 
@@ -803,168 +935,632 @@ def coding_page(profile: str) -> None:
     personal_note(profile, q)
 
 
-def review_list(profile: str, ids: set[str], title: str) -> None:
-    questions = [q for q in ALL_MCQ if q["id"] in ids]
-    code = [q for q in ALL_CODE if q["id"] in ids]
-    st.markdown(
-        f'<div class="section-sub">{len(questions)} MCQs · {len(code)} coding tasks in this queue</div>',
-        unsafe_allow_html=True,
+def select_choice(label: str, options: list, key: str, **kwargs):
+    """Keep dependent filters valid when a parent filter changes."""
+    if key in st.session_state and st.session_state[key] not in options:
+        st.session_state[key] = options[0]
+    return st.selectbox(label, options, key=key, **kwargs)
+
+
+def content_filters(prefix: str) -> dict:
+    kind_col, pack_col, topic_col = st.columns(3)
+    with kind_col:
+        kind = select_choice(
+            "Practice type", ["All practice", "MCQs", "Coding (self-assessed)"], prefix + "_kind"
+        )
+    with pack_col:
+        pack = select_choice(
+            "Lecture",
+            ["All lectures"] + list(PACKS),
+            prefix + "_pack",
+            format_func=lambda k: PACKS[k]["title"] if k in PACKS else k,
+        )
+    topics = sorted(
+        {
+            q["topic_name"]
+            for q in Q_LOOKUP.values()
+            if analytics.content_matches(q, kind=kind, pack=pack)
+        }
     )
-    if questions:
-        for q in questions[:12]:
-            st.markdown(
-                f'<div class="review-item"><b>{esc(q["prompt"][:220])}</b>'
-                f"<p>{esc(q['topic_name'])} · {esc(q['difficulty'])} · {esc(q['id'])}</p></div>",
-                unsafe_allow_html=True,
-            )
-        if len(questions) > 12:
-            st.caption(
-                f"Showing 12 of {len(questions)} questions. The practice session pulls from the full queue."
-            )
-        if st.button(
-            f"Start {title.lower()} practice",
-            type="primary",
-            use_container_width=False,
-            key="review_start_" + title,
-        ):
-            start_session(profile, questions, "All", 20, {"queue": title})
-    if code:
-        with st.expander(f"{len(code)} coding challenges in this queue"):
-            for q in code[:18]:
-                st.markdown(f"**{q['title']}**  ·  {q['difficulty']}")
-            if st.button("Practice coding challenges", key="review_code_" + title):
-                st.session_state["code_pack"] = "All lectures"
-                st.session_state["code_level"] = "Any difficulty"
-                st.session_state["code_status"] = "All tasks"
-                st.session_state["challenge_picker"] = code[0]["id"]
-                go_to("coding")
-    if not questions and not code:
+    with topic_col:
+        topic = select_choice("Topic", ["All topics"] + topics, prefix + "_topic")
+    return {"kind": kind, "pack": pack, "topic": topic}
+
+
+def draw_chart(
+    values: list[dict], kind: str, title: str, caption: str, key: str, *, selectable=False
+):
+    with st.container(border=True, key="chart_" + key):
         st.markdown(
-            '<div class="empty">Your queue is empty. Great time to explore new questions!</div>',
+            f'<h3 class="chart-title">{esc(title)}</h3><p class="chart-caption">{esc(caption)}</p>',
             unsafe_allow_html=True,
         )
+        return st.vega_lite_chart(
+            spec=chart_spec(values, kind, st.session_state["dark_mode"]),
+            theme=None,
+            width="stretch",
+            key=key,
+            on_select="rerun" if selectable else "ignore",
+            selection_mode="topic_pick" if selectable else None,
+            alt=title + ". " + caption,
+        )
+
+
+def open_coding_question(qid: str) -> None:
+    st.session_state["code_pack"] = "All lectures"
+    st.session_state["code_level"] = "Any difficulty"
+    st.session_state["code_status"] = "All tasks"
+    st.session_state["challenge_picker"] = qid
+    go_to("coding")
+
+
+def set_review_item(qid: str) -> None:
+    st.session_state["review_inspect"] = qid
+
+
+def remember_daily_goal(profile: str) -> None:
+    # Store outside the widget key so Streamlit's page cleanup does not erase it.
+    st.session_state["daily_target_" + profile] = st.session_state["daily_goal_" + profile]
+
+
+def review_inspector(profile: str, q: dict, records: list[dict], mastery: dict) -> None:
+    history = [r for r in records if r["question_id"] == q["id"]]
+    m = mastery.get(q["id"], {})
+    with st.container(border=True, key="review_inspector"):
+        st.markdown(
+            f'<div class="eyebrow">QUESTION SPOTLIGHT · {esc(q["id"])}</div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f'<div class="question-heading">{esc(q.get("title", q["prompt"]))}</div>',
+            unsafe_allow_html=True,
+        )
+        if q["type"] == "coding":
+            st.write(q["prompt"])
+        item_meta(q)
+        if q.get("code"):
+            st.code(q["code"], language="python")
+        st.caption(
+            f"Attempts: {len(history)} · Mistakes: {m.get('total_wrong', 0)} · Correct streak: {m.get('streak', 0)}"
+            + (f" · Next review: {as_ist(m.get('next_due'))}" if m else " · Not attempted yet")
+        )
+        action, saved = st.columns([2, 1])
+        with action:
+            if q["type"] == "mcq":
+                if st.button("Try this question again", type="primary", key="review_retry_one"):
+                    start_session(profile, [q], "All", 1, {"source": "Review spotlight"})
+            elif st.button("Open this coding challenge", type="primary", key="review_open_code"):
+                open_coding_question(q["id"])
+        with saved:
+            bookmark_control(profile, q)
+        if q["type"] == "mcq":
+            if history:
+                latest = history[0]
+                selected = latest.get("answer_index")
+                if type(selected) is int and 0 <= selected < len(q["options"]):
+                    st.caption(
+                        f"Latest choice: {q['options'][selected]} · {'Correct' if latest['correct'] else 'Incorrect'} · {as_ist(latest['created_at'])}"
+                    )
+            with st.expander("Reveal answer & reasoning"):
+                st.success("Correct answer: " + q["options"][q["answer"]])
+                st.write(q["explanation"])
+        else:
+            st.caption(
+                "Coding attempts are self-assessed. Test your code before marking it solved."
+            )
+        with st.expander(f"Attempt timeline ({len(history)})"):
+            rich_table(
+                [
+                    {
+                        "When (IST)": as_ist(r["created_at"]),
+                        "Result": "Correct / solved" if r["correct"] else "Incorrect / practice",
+                        "Your answer": q["options"][r["answer_index"]]
+                        if q["type"] == "mcq"
+                        and type(r.get("answer_index")) is int
+                        and 0 <= r["answer_index"] < 4
+                        else "Self-assessed coding",
+                    }
+                    for r in history[:20]
+                ]
+            )
+            if len(history) > 20:
+                st.caption(
+                    "Showing the latest 20 attempts. Complete history is included in exports."
+                )
+        personal_note(profile, q)
 
 
 def review_page(profile: str) -> None:
     hero(
-        "Learning / Repetition",
-        "Revision lab",
-        "Everything you got wrong stays in your attempt history. Use these queues to turn weak spots into reliable skills.",
+        "Practice / Recover / Remember",
+        "Your revision studio",
+        "Turn mistakes into progress. Find what needs attention, retry with purpose, and plan your next review.",
     )
+    if st.session_state.get("review_pending_queue"):
+        st.session_state["review_queue"] = st.session_state.pop("review_pending_queue")
+        st.session_state["review_tabs"] = "Practice queue"
+    if st.session_state.get("review_pending"):
+        st.session_state["review_queue"] = "All studied"
+        st.session_state["review_inspect"] = st.session_state.pop("review_pending")
+        st.session_state["review_tabs"] = "Practice queue"
     mastery = core.mastery_map(profile)
-    now_ = core.now()
-    missed = {k for k, v in mastery.items() if not v["last_correct"]}
-    due = {k for k, v in mastery.items() if v["next_due"] <= now_}
-    marks = core.bookmarked_ids(profile)
-    a, b, c = st.columns(3)
-    a.metric("Need another try", len(missed))
-    b.metric("Due for review", len(due))
-    c.metric("Bookmarked", len(marks))
-    section("Choose a revision queue")
-    tabs = st.tabs([f"Missed ({len(missed)})", f"Due ({len(due)})", f"Bookmarks ({len(marks)})"])
-    for tab, ids, title in zip(tabs, (missed, due, marks), ("Missed", "Due", "Bookmarked")):
-        with tab:
-            review_list(profile, ids, title)
-
-    section(
-        "Your earlier incorrect answers",
-        "Review what you selected, the correct choice, and why it works.",
+    records = core.attempt_history(profile, None)
+    current = datetime.now(UTC)
+    queues = analytics.review_queues(mastery, core.bookmarked_ids(profile), set(Q_LOOKUP), current)
+    cols = st.columns(4)
+    for col, label in zip(
+        cols, ("Needs another try", "Due now", "Bookmarked", "Recovered mistakes")
+    ):
+        col.metric(label, len(queues[label]))
+    st.caption(
+        "Current status across installed lectures. Queues overlap: a missed question can also be due and bookmarked."
     )
-    attempts = [
-        a
-        for a in core.attempt_history(profile, 400)
-        if a["kind"] == "mcq" and not a["correct"] and a["question_id"] in Q_LOOKUP
-    ]
-    if not attempts:
-        st.info("No wrong MCQ attempts recorded. Your history will appear here as you practice.")
-    else:
-        record = st.selectbox(
-            "Choose an earlier mistake",
-            range(len(attempts)),
-            format_func=lambda i: (
-                f"{as_ist(attempts[i]['created_at'])} · {Q_LOOKUP[attempts[i]['question_id']]['prompt'][:88]}"
-            ),
+    with st.container(border=True, key="review_filters"):
+        filters = content_filters("review")
+        a, b = st.columns(2)
+        with a:
+            filters["difficulty"] = select_choice(
+                "Difficulty",
+                ["Any difficulty", "Beginner", "Intermediate", "Advanced"],
+                "review_level",
+            )
+        with b:
+            filters["search"] = st.text_input(
+                "Search questions",
+                key="review_search",
+                placeholder="A concept, question ID, or keyword…",
+            )
+    content = [q for q in Q_LOOKUP.values() if analytics.content_matches(q, **filters)]
+    content_ids = {q["id"] for q in content}
+    queue_tab, history_tab, forecast_tab = st.tabs(
+        ["Practice queue", "Mistake history", "Review forecast"],
+        key="review_tabs",
+        on_change="rerun",
+    )
+    with queue_tab:
+        a, b = st.columns(2)
+        with a:
+            queue = select_choice("Revision queue", list(analytics.QUEUE_HELP), "review_queue")
+        with b:
+            order = select_choice(
+                "Priority",
+                ["Most mistakes first", "Oldest review first", "Topic A–Z"],
+                "review_order",
+            )
+        st.caption(analytics.QUEUE_HELP[queue])
+        items = analytics.sort_review(
+            [q for q in content if q["id"] in queues[queue]], mastery, order
         )
-        attempt = attempts[record]
-        q = Q_LOOKUP[attempt["question_id"]]
-        st.markdown(f"**{q['prompt']}**")
-        if q.get("code"):
-            st.code(q["code"], language="python")
-        st.error("You chose: " + q["options"][attempt["answer_index"]])
-        st.success("Correct choice: " + q["options"][q["answer"]])
+        mcqs = [q for q in items if q["type"] == "mcq"]
+        codes = [q for q in items if q["type"] == "coding"]
         st.markdown(
-            f'<div class="feedback"><strong>Explanation</strong><p>{esc(q["explanation"])}</p></div>',
+            f'<div class="lead-strip"><div><strong>{len(items)} questions in your focus queue</strong><br><span>{len(mcqs)} MCQs · {len(codes)} coding challenges · sorted by {esc(order.lower())}</span></div>{chip(queue, "chip-amber")}</div>',
             unsafe_allow_html=True,
         )
-        personal_note(profile, q)
+        if mcqs:
+            a, b = st.columns([1, 2], vertical_alignment="bottom")
+            with a:
+                size_key = "review_batch_size"
+                if size_key in st.session_state:
+                    st.session_state[size_key] = min(max(1, st.session_state[size_key]), len(mcqs))
+                size = st.number_input(
+                    "Questions to retry",
+                    min_value=1,
+                    max_value=len(mcqs),
+                    value=min(10, len(mcqs)),
+                    step=1,
+                    key=size_key,
+                )
+            with b:
+                if st.button("Start focused revision", type="primary", key="review_start_batch"):
+                    start_session(
+                        profile, mcqs[: int(size)], "All", int(size), {"queue": queue, **filters}
+                    )
+            st.caption(
+                "Uses the highest-priority matching MCQs. Coding challenges open separately from the spotlight below."
+            )
+        if items:
+            ids = [q["id"] for q in items]
+            selected = select_choice(
+                "Question to inspect",
+                ids,
+                "review_inspect",
+                format_func=lambda k: (
+                    f"{Q_LOOKUP[k]['id']} · {Q_LOOKUP[k].get('title', Q_LOOKUP[k]['prompt'])[:110]}"
+                ),
+            )
+            index = ids.index(selected)
+            with st.container(key="question_actions_review"):
+                left, middle, right = st.columns([1, 2, 1], vertical_alignment="center")
+                with left:
+                    st.button(
+                        "Previous item",
+                        disabled=index == 0,
+                        key="review_prev",
+                        on_click=set_review_item,
+                        args=(ids[max(0, index - 1)],),
+                    )
+                with middle:
+                    st.caption(f"Inspecting {index + 1} of {len(ids)} matching questions")
+                with right:
+                    st.button(
+                        "Next item",
+                        disabled=index + 1 == len(ids),
+                        key="review_next",
+                        on_click=set_review_item,
+                        args=(ids[min(len(ids) - 1, index + 1)],),
+                    )
+            review_inspector(profile, Q_LOOKUP[selected], records, mastery)
+            with st.expander("Queue summary · compare all matching questions"):
+                rich_table(
+                    [
+                        {
+                            "Question": q.get("title", q["prompt"])[:130],
+                            "Topic": q["topic_name"],
+                            "Mistakes": mastery.get(q["id"], {}).get("total_wrong", 0),
+                            "Correct streak": mastery.get(q["id"], {}).get("streak", 0),
+                            "Due (IST)": as_ist(mastery.get(q["id"], {}).get("next_due")),
+                        }
+                        for q in items[:100]
+                    ]
+                )
+                if len(items) > 100:
+                    st.caption(
+                        "Table shows the first 100. The inspector and practice queue include every match."
+                    )
+        else:
+            st.info(
+                "No questions in this queue match your filters. Try another queue, clear your search, or practice new questions."
+            )
+            if st.button("Explore the quiz arena", key="review_explore"):
+                go_to("quiz")
+    with history_tab:
+        wrong = [r for r in records if not r["correct"] and r["question_id"] in content_ids]
+        section(
+            "Every mistake has a story",
+            "This history keeps incorrect attempts even after you recover. Content filters apply; the practice-queue selector does not.",
+        )
+        if wrong:
+            wrong_ids = list(dict.fromkeys(r["question_id"] for r in wrong))
+            st.caption(
+                f"{len(wrong)} incorrect attempts across {len(wrong_ids)} questions. Coding results are self-assessed."
+            )
+            selected_history = select_choice(
+                "Revisit a past mistake",
+                wrong_ids,
+                "review_history_item",
+                format_func=lambda k: (
+                    f"{k} · {Q_LOOKUP[k].get('title', Q_LOOKUP[k]['prompt'])[:100]}"
+                ),
+            )
+            if st.button("Inspect this mistake", key="review_history_open"):
+                st.session_state["review_pending"] = selected_history
+                st.rerun()
+            rich_table(
+                [
+                    {
+                        "When (IST)": as_ist(r["created_at"]),
+                        "Question": r["question_id"],
+                        "Topic": Q_LOOKUP[r["question_id"]]["topic_name"],
+                        "Current status": "Recovered"
+                        if mastery.get(r["question_id"], {}).get("last_correct")
+                        else "Needs practice",
+                    }
+                    for r in wrong[:50]
+                ]
+            )
+            st.caption("Latest 50 attempts shown; the download includes every matching mistake.")
+            st.download_button(
+                "Export matching mistakes (CSV)",
+                attempts_export_ist(profile, wrong),
+                file_name="revision_mistakes.csv",
+                mime="text/csv",
+                key="review_export",
+            )
+        else:
+            st.info(
+                "No incorrect attempts match these filters. Your mistake history will appear here as you practice."
+            )
+    with forecast_tab:
+        draw_chart(
+            analytics.review_forecast(mastery, content_ids, current),
+            "forecast",
+            "Your next seven days",
+            "Due now includes overdue items. Future reviews use IST. Wrong answers become due immediately.",
+            "review_forecast",
+        )
+        st.caption(
+            "The forecast respects content filters. It is a snapshot of the current schedule, which changes as you answer."
+        )
+        if st.button("Focus on questions due now", key="review_due_focus"):
+            # Apply on the next rerun, before the queue widget is instantiated.
+            st.session_state["review_pending_queue"] = "Due now"
+            st.rerun()
 
 
 def progress_page(profile: str) -> None:
     hero(
-        "Growth / Analytics",
-        "Your learning progress",
-        "Understand your strong topics, find where you lose marks, and keep your practice history safe.",
+        "Your learning / In perspective",
+        "See your progress take shape.",
+        "Explore your practice rhythm, spot patterns, and turn your next session into a step forward.",
     )
-    metric = core.profile_metrics(profile)
+    current = datetime.now(UTC)
+    today = current.astimezone(analytics.IST).date()
+    all_records = core.attempt_history(profile, None)
+    mastery = core.mastery_map(profile)
+    with st.container(border=True, key="progress_filters"):
+        filters = content_filters("progress")
+        period = select_choice("Time range", list(analytics.PERIODS), "progress_period")
+    records = analytics.filtered_attempts(
+        all_records, Q_LOOKUP, today=today, period=period, **filters
+    )
+    summary = analytics.activity_summary(records, today)
     a, b, c, d = st.columns(4)
-    a.metric("Total attempts", metric["attempts"])
-    b.metric("Accuracy", f"{metric['accuracy']}%" if metric["attempts"] else "—")
-    c.metric("Unique questions", metric["studied"])
-    d.metric("Mastered · 3+ streak", metric["mastered"])
-    records = core.attempt_history(profile, 100000)
-    stats = defaultdict(lambda: [0, 0])
-    for entry in records:
-        q = Q_LOOKUP.get(entry["question_id"])
-        if q:
-            stats[q["topic_name"]][0] += 1
-            stats[q["topic_name"]][1] += int(entry["correct"])
-    section("Strength by topic", "Performance across MCQs and self-assessed coding tasks.")
-    if stats:
-        rows = [
-            {"Topic": key, "Attempts": n, "Correct": right, "Accuracy %": round(100 * right / n)}
-            for key, (n, right) in sorted(stats.items())
-        ]
-        for row in sorted(rows, key=lambda r: (-r["Attempts"], r["Topic"])):
-            pct = max(0, min(100, row["Accuracy %"]))
-            st.markdown(
-                f'<div class="topic-row"><span class="topic-label">{esc(row["Topic"])}</span>'
-                f'<div class="topic-track" role="meter" aria-label="{esc(row["Topic"])} accuracy" '
-                f'aria-valuemin="0" aria-valuemax="100" aria-valuenow="{pct}">'
-                f'<div class="topic-fill" style="width:{pct}%"></div></div>'
-                f'<span class="topic-rate">{pct}%</span></div>',
-                unsafe_allow_html=True,
+    a.metric("Attempts in range", summary["attempts"])
+    b.metric("Accuracy", f"{summary['accuracy']:g}%" if records else "—")
+    c.metric("Questions practiced", summary["studied"])
+    d.metric("Active days", summary["active_days"])
+    st.caption(
+        f"{period} · {filters['kind']} · IST dates. MCQs are graded automatically; coding attempts use your self-assessment."
+    )
+    missing = sum(r["question_id"] not in Q_LOOKUP for r in all_records)
+    if missing:
+        st.caption(
+            f"{missing} attempts reference unavailable lectures and are excluded from charts. Full exports retain them."
+        )
+    if not records:
+        st.info(
+            "No practice matches these filters yet. Broaden the time range or start a session to build your dashboard."
+        )
+    content = [q for q in Q_LOOKUP.values() if analytics.content_matches(q, **filters)]
+    content_ids = {q["id"] for q in content}
+    known = content_ids & set(mastery)
+    mastered = sum(mastery[qid]["streak"] >= 3 for qid in known)
+    queues = analytics.review_queues(mastery, core.bookmarked_ids(profile), content_ids, current)
+    overview, topics_tab, history = st.tabs(
+        ["Learning pulse", "Topics & difficulty", "History & exports"],
+        key="progress_tabs",
+        on_change="rerun",
+    )
+    with overview:
+        with st.container(border=True, key="practice_goal"):
+            a, b = st.columns([2, 1], vertical_alignment="center")
+            with a:
+                st.markdown(
+                    f'<div class="eyebrow">TODAY’S MOMENTUM</div><h3 class="chart-title">{summary["today"]} attempts today · {summary["streak"]}-day streak</h3>',
+                    unsafe_allow_html=True,
+                )
+                st.caption(
+                    f"Best streak in the selected range: {summary['best_streak']} days. A streak stays active through yesterday."
+                )
+            with b:
+                goal = st.number_input(
+                    "Daily attempt target",
+                    min_value=1,
+                    max_value=500,
+                    value=st.session_state.get("daily_target_" + profile, 10),
+                    step=1,
+                    key="daily_goal_" + profile,
+                    on_change=remember_daily_goal,
+                    args=(profile,),
+                )
+            st.progress(
+                min(1.0, summary["today"] / goal),
+                text=f"{min(summary['today'], goal)}/{goal} toward today's target",
             )
-        with st.expander("View the detailed topic table"):
-            rich_table(rows)
-    else:
-        st.info("Answer your first questions to unlock topic analytics.")
-    section("Recent sessions")
-    sessions = core.recent_sessions(profile, limit=30)
-    if sessions:
+            st.caption(
+                "Target is remembered for this browser session. Counts respect the selected content filters."
+            )
+        days = analytics.activity_window(records, today, period)
+        activity = analytics.daily_activity(records, today, days)
+        left, right = st.columns([1.7, 1])
+        with left:
+            draw_chart(
+                activity,
+                "activity",
+                "Activity meets accuracy",
+                "Blue bars: daily attempts. Gold line: accuracy on days practiced. Hover for details.",
+                "progress_activity",
+            )
+        with right:
+            if records:
+                draw_chart(
+                    [
+                        {"Result": "Correct / solved", "Attempts": summary["correct"]},
+                        {
+                            "Result": "Incorrect / practice",
+                            "Attempts": len(records) - summary["correct"],
+                        },
+                    ],
+                    "outcomes",
+                    "Every attempt counts",
+                    "Results within your selected filters.",
+                    "progress_outcomes",
+                )
+            else:
+                st.info("Your results breakdown appears after your first attempt.")
+        st.caption(
+            "The activity graph shows up to 90 days and adapts to shorter histories. Summary metrics and exports cover the full selected range."
+        )
+        draw_chart(
+            analytics.daily_activity(records, today, min(analytics.PERIODS[period] or 84, 84)),
+            "calendar",
+            "Your practice calendar",
+            "Each square is an IST day. Stronger colour means more attempts. Hover to explore.",
+            "progress_calendar",
+        )
+        with st.container(border=True, key="mastery_snapshot"):
+            section(
+                "Your library, in motion",
+                "Current status for the selected content, independent of the time range. Mastered means a streak of at least three correct attempts.",
+            )
+            a, b, c = st.columns(3)
+            a.metric("Mastered", mastered)
+            b.metric("Still building", len(known) - mastered)
+            c.metric("Not started", len(content) - len(known))
+            st.progress(
+                len(known) / len(content) if content else 0,
+                text=f"{len(known)} of {len(content)} questions explored",
+            )
+            if st.button(
+                f"Open revision studio · {len(queues['Needs another try'])} need another try",
+                key="progress_review_link",
+            ):
+                st.session_state["review_kind"] = filters["kind"]
+                st.session_state["review_pack"] = filters["pack"]
+                st.session_state["review_topic"] = filters["topic"]
+                st.session_state["review_queue"] = "Needs another try"
+                st.session_state["review_level"] = "Any difficulty"
+                st.session_state["review_search"] = ""
+                go_to("review")
+    with topics_tab:
+        topics = analytics.performance_rows(records, Q_LOOKUP)
+        if topics:
+            event = draw_chart(
+                topics,
+                "topics",
+                "Where your practice is going",
+                "Sorted by accuracy, lowest first. Click a bar to explore that topic below; double-click to clear the selection.",
+                "progress_topics",
+                selectable=True,
+            )
+            topic_map = {r["Key"]: r for r in topics}
+            selection = (
+                event.get("selection", {}).get("topic_pick", []) if isinstance(event, dict) else []
+            )
+            picked = selection[0].get("Key") if selection else None
+            if picked in topic_map and picked != st.session_state.get("last_chart_topic"):
+                st.session_state["progress_spotlight"] = picked
+            st.session_state["last_chart_topic"] = picked
+            spotlight = select_choice(
+                "Topic spotlight",
+                list(topic_map),
+                "progress_spotlight",
+                format_func=lambda k: f"{topic_map[k]['Topic']} · {topic_map[k]['Lecture']}",
+            )
+            row = topic_map[spotlight]
+            with st.container(border=True, key="topic_spotlight"):
+                section(
+                    row["Topic"],
+                    f"{row['Attempts']} attempts · {row['Accuracy']:g}% accuracy · {row['Wrong']} incorrect / needs-practice results",
+                )
+                if row["Attempts"] < 5:
+                    st.caption(
+                        "A small sample: practice more before treating this accuracy as a reliable strength or weakness."
+                    )
+                candidates = [q for q in content if f"{q['pack_id']}:{q['topic']}" == spotlight]
+                mcqs = [q for q in candidates if q["type"] == "mcq"]
+                if mcqs and st.button(
+                    "Practice this topic", type="primary", key="progress_topic_practice"
+                ):
+                    start_session(
+                        profile,
+                        mcqs,
+                        "Smart Mix",
+                        min(10, len(mcqs)),
+                        {"topic": row["Topic"], "source": "Progress spotlight"},
+                    )
+                codes = [q for q in candidates if q["type"] == "coding"]
+                if codes and st.button("Open a coding challenge", key="progress_topic_code"):
+                    open_coding_question(codes[0]["id"])
+            draw_chart(
+                analytics.performance_rows(records, Q_LOOKUP, "difficulty"),
+                "difficulty",
+                "Challenge yourself at every level",
+                "Hover to compare accuracy and sample size by difficulty. Includes only attempted levels.",
+                "progress_difficulty",
+            )
+            with st.expander("Detailed topic data"):
+                rich_table(
+                    [
+                        {
+                            k: r[k]
+                            for k in (
+                                "Topic",
+                                "Lecture",
+                                "Attempts",
+                                "Correct",
+                                "Wrong",
+                                "Accuracy",
+                            )
+                        }
+                        for r in topics
+                    ]
+                )
+        else:
+            st.info("Topic and difficulty charts appear after practice matches your filters.")
+    with history:
+        section(
+            "Your attempt journal",
+            "The latest 100 attempts matching the dashboard filters. Download the full filtered set below.",
+        )
         rich_table(
             [
                 {
-                    "Saved at (IST)": as_ist(s["created_at"]),
-                    "Mode": s["configuration"].get("mode", "All"),
-                    "Progress": f"{s['position']}/{len(s['queue'])}",
-                    "Status": "Finished" if s["completed_at"] else "In progress",
+                    "When (IST)": as_ist(r["created_at"]),
+                    "Question": r["question_id"],
+                    "Topic": Q_LOOKUP[r["question_id"]]["topic_name"],
+                    "Type": "MCQ" if r["kind"] == "mcq" else "Coding · self-assessed",
+                    "Result": "Correct / solved" if r["correct"] else "Incorrect / practice",
                 }
-                for s in sessions
+                for r in records[:100]
             ]
         )
-    else:
-        st.caption("No saved sessions yet.")
+        st.download_button(
+            "Export filtered attempts (CSV)",
+            attempts_export_ist(profile, records),
+            file_name="python_filtered_attempts.csv",
+            mime="text/csv",
+            key="progress_filtered_export",
+            disabled=not records,
+        )
+        sessions = core.recent_sessions(profile, limit=30)
+        section(
+            "Pick up a saved session",
+            "The latest 30 profile sessions, independent of chart filters.",
+        )
+        if sessions:
+            unfinished = [s for s in sessions if not s["completed_at"]]
+            if unfinished:
+                session_map = {s["id"]: s for s in unfinished}
+                sid = select_choice(
+                    "Saved quiz",
+                    list(session_map),
+                    "progress_resume_picker",
+                    format_func=lambda k: (
+                        f"{as_ist(session_map[k]['created_at'])} · Question {session_map[k]['position'] + 1} of {len(session_map[k]['queue'])}"
+                    ),
+                )
+                if st.button("Resume this quiz", key="progress_resume"):
+                    st.session_state["active_session_id"] = sid
+                    go_to("quiz")
+            rich_table(
+                [
+                    {
+                        "Saved at (IST)": as_ist(s["created_at"]),
+                        "Mode": s["configuration"].get("mode", "All"),
+                        "Position": f"{min(s['position'] + 1, len(s['queue']))}/{len(s['queue'])}",
+                        "Status": "Finished" if s["completed_at"] else "In progress",
+                    }
+                    for s in sessions
+                ]
+            )
+        else:
+            st.caption("No saved sessions yet.")
+        progress_backups(profile)
+
+
+def progress_backups(profile: str) -> None:
     section(
-        "Export & backup",
-        "Export answers as CSV, or download a full backup that also includes notes and drafts.",
+        "Export & backup", "These full-profile exports are independent of the dashboard filters."
     )
     with st.container(key="export_actions"):
         left, right = st.columns(2, gap="small")
         with left:
             st.download_button(
-                "Export attempts (CSV)",
+                "Export all attempts (CSV)",
                 data=attempts_export_ist(profile),
-                file_name=f"python_attempts_{profile.replace(' ', '_')}.csv",
+                file_name="python_all_attempts.csv",
                 mime="text/csv",
                 use_container_width=False,
             )
@@ -977,25 +1573,19 @@ def progress_page(profile: str) -> None:
                     mime="application/zip",
                     use_container_width=False,
                 )
-            else:
-                dbfile = core.DEFAULT_DB
-                if dbfile.exists():
-                    st.download_button(
-                        "Download progress database",
-                        data=consistent_db_backup(),
-                        file_name="python_mastery_progress.sqlite3",
-                        mime="application/octet-stream",
-                        use_container_width=False,
-                    )
-    if cloud.is_cloud():
-        st.caption(
-            "Your study progress and imported lecture packs are stored in hosted PostgreSQL, independently from app deployments. Save an offline backup periodically. All displayed timestamps use IST (UTC+05:30)."
-        )
-    else:
-        st.caption("The database backup includes all learner profiles on this computer.")
-        st.caption(
-            "Offline mode: saved progress is in data/progress.sqlite3 on this computer, not on Streamlit Cloud. All displayed timestamps use IST (UTC+05:30)."
-        )
+            elif core.DEFAULT_DB.exists():
+                st.download_button(
+                    "Download progress database",
+                    data=consistent_db_backup(),
+                    file_name="python_mastery_progress.sqlite3",
+                    mime="application/octet-stream",
+                    use_container_width=False,
+                )
+    st.caption(
+        "Cloud backups include your profile and imported lecture packs."
+        if cloud.is_cloud()
+        else "The SQLite database backup includes all learner profiles on this computer."
+    )
 
 
 def packs_page(profile: str) -> None:

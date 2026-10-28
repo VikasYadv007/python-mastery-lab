@@ -55,6 +55,8 @@ def python_mark(size: int = 40) -> str:
 # Semantic colors, translucent surfaces, and solid accessibility fallbacks.
 THEMES = {
     "light": {
+        "--surface-2": "#ffffffa6",
+        "--surface-3": "#e0ebf3",
         "--bg": "#f0f4f6",
         "--surface": "#f9fbfd",
         "--text": "#172e42",
@@ -93,6 +95,8 @@ THEMES = {
         "--string": "#397550",
     },
     "dark": {
+        "--surface-2": "#243c4e8c",
+        "--surface-3": "#2c465a",
         "--bg": "#0b1620",
         "--surface": "#172b3b",
         "--text": "#edf5fa",
@@ -357,6 +361,70 @@ input[type="radio"],input[type="checkbox"]{accent-color:var(--accent-solid);}
 .empty{border-style:dashed!important;border-radius:18px;padding:28px;text-align:center;color:var(--muted);font-size:.9rem;}
 .table-scroll{overflow-x:auto;max-width:100%;border-radius:16px;margin:10px 0;}.ui-table{width:100%;border-collapse:collapse;font-size:.84rem;}.ui-table th{background:var(--surface-2);color:var(--text);text-align:left;font-weight:650;padding:13px 16px;white-space:nowrap;}.ui-table td{padding:13px 16px;color:var(--text);border-top:1px solid var(--border);vertical-align:top;}.ui-table pre{white-space:pre-wrap;min-width:130px;margin:0;font-size:.8rem;color:var(--text);}
 .hero,.question-heading,.review-item,.option-card,.lead-strip,.topic-label,.num-chip{overflow-wrap:anywhere;}
+/* React Aria text editors use a separate surface around the actual input. */
+[data-testid="stTextInputRootElement"],[data-testid="stTextAreaRootElement"]{
+ background:var(--input-bg)!important;border:1px solid var(--border-strong)!important;
+ border-radius:12px!important;box-shadow:inset 0 1px 3px var(--shadow)!important;}
+[data-testid="stTextInputRootElement"] > input,[data-testid="stTextAreaRootElement"] > textarea{
+ background:transparent!important;border:0!important;box-shadow:none!important;color:var(--text)!important;}
+[data-testid="stTextInputRootElement"] > div,[data-testid="stTextInputRootElement"] button{
+ background:transparent!important;color:var(--text)!important;}
+/* Learning analytics and the revision studio reuse the glass surface tokens. */
+[class*="st-key-chart_"],.st-key-progress_filters,.st-key-review_filters,
+.st-key-practice_goal,.st-key-mastery_snapshot,.st-key-topic_spotlight,.st-key-review_inspector{
+ background:var(--glass)!important;border:1px solid var(--border)!important;border-radius:22px!important;
+ padding:22px!important;box-shadow:var(--panel-shadow),inset 0 1px var(--edge)!important;
+}
+[data-testid="stMain"] h3.chart-title{font-size:1.08rem!important;line-height:1.4!important;
+ letter-spacing:-.025em!important;margin:0 0 6px!important;padding:0!important;font-weight:750;}
+[data-testid="stMain"] p.chart-caption{color:var(--muted)!important;font-size:.78rem!important;
+ line-height:1.6!important;margin:0 0 16px!important;}
+[data-testid="stVegaLiteChart"]{border-radius:12px;min-width:0;}
+[data-testid="stVegaLiteChart"] :is(canvas,svg){max-width:100%;}
+#vg-tooltip-element{background:var(--surface)!important;color:var(--text)!important;
+ border:1px solid var(--border-strong)!important;border-radius:12px!important;
+ box-shadow:var(--panel-shadow)!important;font-family:"Segoe UI",sans-serif!important;}
+#vg-tooltip-element :is(th,td){color:var(--text)!important;}
+.st-key-question_actions_review [data-testid="stHorizontalBlock"]{gap:10px!important;}
+@media(max-width:640px){
+ [class*="st-key-chart_"],.st-key-progress_filters,.st-key-review_filters,
+ .st-key-practice_goal,.st-key-mastery_snapshot,.st-key-topic_spotlight,.st-key-review_inspector{padding:16px!important;}
+}
+/* The overview is its own small observatory; other pages retain their workspace. */
+[data-testid="stAppViewContainer"]:has(.st-key-overview_scene){isolation:isolate;}
+[data-testid="stAppViewContainer"]:has(.st-key-overview_scene)::before{
+ content:"";position:fixed;inset:-5%;pointer-events:none;z-index:0;
+ background:radial-gradient(ellipse at 12% 25%,var(--blue-glow),transparent 50%),radial-gradient(ellipse at 88% 70%,var(--gold-glow),transparent 48%);
+ opacity:.4;animation:home-aurora 28s ease-in-out infinite alternate;}
+[data-testid="stAppViewContainer"]:has(.st-key-overview_scene) [data-testid="stMain"]{position:relative;z-index:1;}
+.st-key-overview_scene{margin:1px 0 12px;}
+.st-key-home_mission,.st-key-home_resume,.st-key-home_topic_launchpad{
+ background:var(--glass)!important;border:1px solid var(--border)!important;border-radius:22px!important;
+ padding:24px!important;box-shadow:var(--panel-shadow),inset 0 1px var(--edge)!important;}
+.st-key-home_mission .feature-description,.st-key-home_resume .feature-description{min-height:0!important;margin-bottom:0;}
+.home-coverage{position:relative;width:145px;height:145px;margin:10px auto;}
+.home-coverage svg{width:100%;height:100%;transform:rotate(-90deg);overflow:visible;}
+.home-ring-track,.home-ring-fill{fill:none;stroke-width:8;}.home-ring-track{stroke:var(--surface-3);}
+.home-ring-fill{stroke:var(--accent);stroke-linecap:round;stroke-dasharray:339.3;stroke-dashoffset:var(--ring-offset);animation:home-ring 1.2s cubic-bezier(.16,1,.3,1) both;}
+.home-coverage > div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+.home-coverage strong{font-size:1.9rem;color:var(--text);font-weight:750;letter-spacing:-.06em;}
+.home-coverage span{font: .65rem Consolas,monospace;color:var(--subtle);letter-spacing:.04em;}
+.home-topic-chips{margin:10px 0 7px;}.home-topic-facts{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:.78rem;line-height:1.7;}
+.home-topic-facts b{color:var(--text);font-size:.93rem;}
+.home-feature-kicker{font:600 .58rem/1.7 Consolas,monospace;letter-spacing:.1em;color:var(--subtle);margin-bottom:18px;}
+.st-key-feature_quiz,.st-key-feature_coding,.st-key-feature_review{animation:home-rise .7s ease both;transition:translate .25s ease,border-color .2s,box-shadow .2s;}
+.st-key-feature_coding{animation-delay:.1s;}.st-key-feature_review{animation-delay:.2s;}
+.st-key-feature_quiz:hover,.st-key-feature_coding:hover,.st-key-feature_review:hover{translate:0 -5px;}
+.st-key-feature_quiz .feature-icon,.st-key-feature_coding .feature-icon,.st-key-feature_review .feature-icon{transition:rotate .25s ease,scale .25s ease;}
+.st-key-feature_quiz:hover .feature-icon,.st-key-feature_coding:hover .feature-icon,.st-key-feature_review:hover .feature-icon{rotate:-6deg;scale:1.08;}
+.st-key-home_topic_actions [data-testid="stHorizontalBlock"]{display:flex!important;flex-wrap:wrap!important;gap:10px!important;}
+.st-key-home_topic_actions [data-testid="stColumn"]{flex:0 1 auto!important;width:auto!important;min-width:0!important;}
+@keyframes home-aurora{from{transform:translate3d(-1%,-1%,0) scale(1);}to{transform:translate3d(2%,2%,0) scale(1.04);}}
+@keyframes home-rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes home-ring{from{stroke-dashoffset:339.3;}to{stroke-dashoffset:var(--ring-offset);}}
+@media(max-width:640px){.st-key-home_mission,.st-key-home_resume,.st-key-home_topic_launchpad{padding:19px!important;}.home-coverage{width:125px;height:125px;}.home-topic-facts{gap:12px;}}
+@media(prefers-reduced-motion:reduce){[data-testid="stAppViewContainer"]:has(.st-key-overview_scene)::before{animation:none!important;}.home-ring-fill{stroke-dashoffset:var(--ring-offset)!important;}.st-key-feature_quiz:hover,.st-key-feature_coding:hover,.st-key-feature_review:hover{translate:none;}}
+[data-testid="stAppViewContainer"]:has(#python-observatory.is-still)::before{animation-play-state:paused;}
 /* Preserve closely grouped actions without stretched or overlapping buttons. */
 :is(.st-key-quick_actions,.st-key-code_actions,.st-key-question_actions,.st-key-completed_actions,.st-key-grading_actions,.st-key-export_actions) [data-testid="stHorizontalBlock"]{display:flex!important;flex-wrap:wrap!important;gap:10px!important;justify-content:flex-start!important;}
 :is(.st-key-quick_actions,.st-key-code_actions,.st-key-question_actions,.st-key-completed_actions,.st-key-grading_actions,.st-key-export_actions) [data-testid="stColumn"]{flex:0 1 auto!important;width:auto!important;min-width:0!important;}

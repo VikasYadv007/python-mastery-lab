@@ -197,3 +197,33 @@ def test_restore_pack_conflict_rolls_back_progress(tmp_path, monkeypatch, bank):
         restore_backup.restore(backup, "alice")
     with real_db(path) as con:
         assert con.execute("SELECT COUNT(*) FROM personal_notes").fetchone()[0] == 0
+
+
+def test_legacy_packs_without_type_support_analytics_and_restore(tmp_path, monkeypatch, bank):
+    from restore_backup import pack_body
+
+    legacy = copy.deepcopy(bank)
+    for q in legacy["questions"] + legacy["challenges"]:
+        q.pop("type", None)
+    monkeypatch.setattr(core, "PACK_DIR", tmp_path)
+    (tmp_path / "legacy.json").write_text(json.dumps(legacy), encoding="utf-8")
+    loaded = next(iter(core.load_packs().values()))
+    assert all(q["type"] == "mcq" for q in loaded["questions"])
+    assert all(q["type"] == "coding" for q in loaded["challenges"])
+    assert pack_body(legacy) == pack_body(loaded)
+
+
+def test_complete_history_is_profile_scoped_and_not_limited_to_200(tmp_path):
+    path = tmp_path / "history.sqlite3"
+    core.init_db(path)
+    with core.db(path) as con:
+        for index in range(205):
+            con.execute(
+                "INSERT INTO attempts(profile,session_id,question_id,kind,correct,created_at) VALUES (?,?,?,?,?,?)",
+                ("alice", str(index), "q1", "mcq", 1, core.now()),
+            )
+    assert len(core.attempt_history("alice", database=path)) == 200
+    assert len(core.attempt_history("alice", None, path)) == 205
+    assert not core.attempt_history("bob", None, path)
+    with pytest.raises(ValueError):
+        core.attempt_history("alice", -1, path)

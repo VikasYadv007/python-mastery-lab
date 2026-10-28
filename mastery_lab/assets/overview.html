@@ -1,0 +1,107 @@
+<section id="python-observatory" class="ov-scene" data-theme="__OV_THEME__" style="__OV_THEME_VARS__" data-version="__OV_VERSION__" data-info="__OV_DATA__" aria-label="Your Python learning observatory">
+  <div class="ov-grain" aria-hidden="true"></div>
+  <div class="ov-pointer-glow" aria-hidden="true"></div>
+  <div class="ov-copy">
+    <div class="ov-kicker"><span></span> THE PYTHON OBSERVATORY</div>
+    <h1>Your next<br><span>Python breakthrough</span><br>starts here.</h1>
+    <p>A universe of ideas. A little practice every day.<br>Find your rhythm and make the concepts yours.</p>
+    <div class="ov-inventory"><span>__OV_QUESTIONS__ questions</span><i></i><span>__OV_CODING__ challenges</span><i></i><span>__OV_TOPICS__ topics</span></div>
+    <div class="ov-console" aria-hidden="true"><span>&gt;&gt;&gt;</span> <span class="ov-type-line">print("keep going")</span><b class="ov-caret">▍</b></div>
+  </div>
+  <div class="ov-stage" tabindex="0" role="group" aria-label="Interactive Python particle sculpture. Drag to rotate; arrow keys rotate, Space pauses, Escape resets the view.">
+    <canvas aria-hidden="true"></canvas>
+    <div class="ov-core" aria-hidden="true"><div>__OV_LOGO__</div></div>
+    <span class="ov-code-glyph ov-glyph-a" aria-hidden="true">{ curiosity }</span>
+    <span class="ov-code-glyph ov-glyph-b" aria-hidden="true">def grow():</span>
+    <span class="ov-code-glyph ov-glyph-c" aria-hidden="true">[ possibility ]</span>
+    <button class="ov-satellite ov-satellite-a" data-insight="explored" aria-label="Explore your question coverage"><span class="ov-mini-orbit"></span><b>__OV_EXPLORED__</b><small>explored</small></button>
+    <button class="ov-satellite ov-satellite-b" data-insight="due" aria-label="Explain your due reviews"><span class="ov-spark">✦</span><b>__OV_DUE__</b><small>due for review</small></button>
+    <div class="ov-orbit-caption" aria-hidden="true">DRAG TO ORBIT <span>·</span> CLICK A SIGNAL</div>
+  </div>
+  <div class="ov-bottom">
+    <div class="ov-controls" role="group" aria-label="Particle formations">
+      <button data-shape="sphere" aria-pressed="true">Orbit</button>
+      <button data-shape="helix" aria-pressed="false">Double helix</button>
+      <button data-shape="wings" aria-pressed="false">Wings</button>
+    </div>
+    <div class="ov-motion-controls"><button data-action="reset" aria-label="Reset particle view">Reset view</button><button data-action="motion" aria-pressed="true">Pause motion</button></div>
+  </div>
+  <div class="ov-signal" aria-live="polite" aria-atomic="true"><span class="ov-signal-dot"></span><span data-detail>Your learning universe is waiting. Try a new formation or click a floating signal.</span></div>
+  <div class="ov-signal-picker"><label for="ov-topic-picker">Explore a concept</label><select id="ov-topic-picker" aria-label="Explore a concept in the particle scene"><option value="">Choose a topic…</option></select></div>
+  <div class="ov-metrics" aria-label="Your current learning signals">
+    <button class="ov-stat" data-insight="explored"><small>IDEAS EXPLORED</small><strong data-counter="studied">__OV_EXPLORED__</strong><span>Every first attempt opens a door <i>↗</i></span></button>
+    <button class="ov-stat" data-insight="accuracy"><small>YOUR ACCURACY</small><strong>__OV_ACCURACY__</strong><span>A signal, never a ceiling <i>↗</i></span></button>
+    <button class="ov-stat" data-insight="streak"><small>CURRENT STREAK</small><strong><span data-counter="streak">__OV_STREAK__</span><em> days</em></strong><span>Small steps add up <i>↗</i></span></button>
+    <button class="ov-stat" data-insight="due"><small>READY TO REVISIT</small><strong data-counter="due">__OV_DUE__</strong><span>Make the learning stick <i>↗</i></span></button>
+  </div>
+  <noscript><p>The particle scene needs JavaScript. All study controls remain available below.</p></noscript>
+</section>
+<style>
+#python-observatory{--ov-blue:#3776ab;--ov-gold:#dbb02a;--ov-ink:var(--text,#172e42);--ov-muted:var(--muted,#465f72);--ov-edge:var(--border,#c7d9e5);--ov-panel:var(--glass,linear-gradient(135deg,#ffffffdd,#ffffff88));--mx:0px;--my:0px;--spot-x:72%;--spot-y:40%;}
+#python-observatory[data-theme="dark"]{--ov-blue:#87c9f2;--ov-gold:#ffd343;}
+#python-observatory *,#python-observatory *::before,#python-observatory *::after{box-sizing:border-box;}
+.ov-scene{position:relative;isolation:isolate;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;
+ background:var(--ov-panel);border:1px solid var(--ov-edge);border-radius:30px;color:var(--ov-ink);
+ box-shadow:0 16px 60px #193c6310,inset 0 1px #ffffff50;font-family:"Segoe UI",system-ui,sans-serif;}
+.ov-scene::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 76% 28%,#3776ab18,transparent 55%),radial-gradient(ellipse at 90% 70%,#ffd34316,transparent 50%);}
+.ov-scene::after{content:"";position:absolute;inset:0;border-radius:30px;pointer-events:none;border-top:2px solid #3776ab4a;}
+.ov-grain{position:absolute;inset:0;pointer-events:none;opacity:.3;z-index:-1;background-image:radial-gradient(var(--ov-blue) .6px,transparent .6px);background-size:22px 22px;mask-image:linear-gradient(90deg,transparent 30%,#000);}
+.ov-pointer-glow{position:absolute;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(230px circle at var(--spot-x) var(--spot-y),#3776ab15,transparent 75%);}
+.ov-copy{padding:40px 0 28px 34px;align-self:center;z-index:2;pointer-events:none;}
+.ov-kicker{display:flex;align-items:center;gap:9px;color:var(--ov-blue);font:700 .62rem/1.6 Consolas,monospace;letter-spacing:.14em;}
+.ov-kicker > span{width:6px;height:6px;border-radius:50%;background:var(--ov-gold);box-shadow:0 0 0 5px #ffd34316;animation:ov-beacon 3.5s ease-in-out infinite;}
+#python-observatory h1{color:var(--ov-ink)!important;font-size:clamp(2rem,3.9vw,3.15rem)!important;font-weight:800;letter-spacing:-.065em;line-height:1.13;margin:22px 0 18px!important;padding:0;}
+#python-observatory h1 > span{color:var(--ov-blue);}
+#python-observatory .ov-copy > p{font-size:.86rem;line-height:1.8;margin:0;color:var(--ov-muted);}
+.ov-inventory{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--ov-muted);font-size:.66rem;margin-top:20px;}
+.ov-inventory i{width:3px;height:3px;background:var(--ov-gold);border-radius:50%;}
+.ov-console{font: .75rem/1.6 Consolas,monospace;color:var(--ov-muted);margin-top:27px;display:flex;align-items:center;gap:9px;}
+.ov-console > span:first-child{color:var(--ov-gold);font-weight:700;}.ov-type-line{display:inline-block;overflow:hidden;white-space:nowrap;max-width:22ch;animation:ov-type 1.8s steps(20) both;}.ov-caret{color:var(--ov-blue);font-weight:400;animation:ov-blink 1.1s steps(2) infinite;}
+.ov-stage{position:relative;min-height:400px;min-width:0;touch-action:pan-y;cursor:grab;outline:none;isolation:isolate;}
+.ov-stage.is-dragging{cursor:grabbing;}.ov-stage canvas{position:absolute;inset:0;width:100%;height:100%;}
+.ov-core{position:absolute;left:50%;top:49%;width:88px;height:88px;display:grid;place-items:center;border-radius:27px;
+ background:var(--surface-2,#fff9);border:1px solid var(--ov-edge);box-shadow:0 10px 45px #3776ab24,inset 0 1px #ffffff40;
+ transform:translate(calc(-50% + var(--mx)),calc(-50% + var(--my)));pointer-events:none;backdrop-filter:blur(12px);}
+.ov-core > div{display:grid;place-items:center;animation:ov-float 6s ease-in-out infinite;}.ov-core :is(svg,img){width:60px;height:60px;}
+.ov-code-glyph{position:absolute;font: .62rem Consolas,monospace;color:var(--ov-muted);opacity:.6;pointer-events:none;animation:ov-float 10s ease-in-out infinite;}
+.ov-glyph-a{left:13%;top:14%;}.ov-glyph-b{right:5%;top:30%;animation-delay:-3s;}.ov-glyph-c{right:9%;bottom:16%;animation-delay:-6s;}
+.ov-scene button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.ov-satellite{position:absolute;display:flex;align-items:center;gap:7px;white-space:nowrap;padding:10px 12px;
+ border:1px solid var(--ov-edge);border-radius:13px;color:var(--ov-ink);background:var(--surface,#f9fbfd);box-shadow:0 6px 24px #193c6310;
+ animation:ov-float 7s ease-in-out infinite;transition:border-color .18s,box-shadow .18s;}
+.ov-satellite:hover{border-color:var(--ov-blue);box-shadow:0 8px 28px #3776ab22;}
+.ov-satellite-a{left:3%;top:23%;}.ov-satellite-b{right:7%;bottom:26%;animation-delay:-2s;}
+.ov-satellite b{font-size:.87rem;}.ov-satellite small{font-size:.62rem;color:var(--ov-muted);}
+.ov-mini-orbit{height:12px;width:12px;border:1px solid var(--ov-blue);border-radius:50%;box-shadow:inset 0 0 0 3px var(--surface,#fff);background:var(--ov-blue);}.ov-spark{color:var(--ov-gold);}
+.ov-orbit-caption{position:absolute;bottom:27px;left:0;right:0;text-align:center;color:var(--ov-muted);font: .55rem/1.5 Consolas,monospace;letter-spacing:.1em;opacity:.7;pointer-events:none;}
+.ov-orbit-caption span{color:var(--ov-gold);padding:0 7px;}
+.ov-bottom{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:0 30px 20px;}
+.ov-controls{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--ov-edge);border-radius:13px;background:var(--surface-2,#ffffff55);}
+.ov-controls button{border:1px solid transparent;background:transparent;color:var(--ov-muted);border-radius:9px;padding:8px 13px;font-size:.71rem;min-height:37px;transition:background .18s,color .18s;}
+.ov-controls button[aria-pressed="true"]{background:var(--accent-soft,#3776ab18);color:var(--ov-blue);border-color:var(--accent-stroke,#6498bd);box-shadow:inset 0 -2px var(--ov-gold);}
+.ov-motion-controls{display:flex;gap:8px;}.ov-motion-controls button{color:var(--ov-muted);font-size:.68rem;padding:9px 10px;background:transparent;border:1px solid var(--ov-edge);border-radius:10px;min-height:37px;}
+.ov-motion-controls button:hover{background:var(--surface-2,#ffffff55);color:var(--ov-ink);}
+.ov-signal{grid-column:1/-1;display:flex;gap:9px;align-items:flex-start;margin:0 30px;padding:13px 0;border-top:1px solid var(--ov-edge);font-size:.73rem;line-height:1.65;color:var(--ov-muted);min-height:56px;}
+.ov-signal-dot{flex:none;height:5px;width:5px;border-radius:50%;background:var(--ov-blue);margin-top:6px;box-shadow:0 0 0 4px #3776ab0b;}
+.ov-signal-picker{grid-column:1/-1;display:flex;align-items:center;gap:14px;margin:0 30px 23px;}
+.ov-signal-picker label{font-size:.7rem;color:var(--ov-muted);white-space:nowrap;}.ov-signal-picker select{font: .74rem "Segoe UI",sans-serif;color:var(--ov-ink);background:var(--input-bg,#fff);border:1px solid var(--border-strong,#b6cbd9);border-radius:10px;padding:9px 12px;max-width:100%;width:100%;min-width:0;}
+.ov-signal-picker option{color:var(--ov-ink);background:var(--surface,#f9fbfd);}
+.ov-metrics{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ov-edge);background:var(--surface-2,#ffffff55);}
+.ov-stat{text-align:left;display:flex;flex-direction:column;gap:12px;padding:23px 21px;color:var(--ov-ink);background:transparent;border:0;border-right:1px solid var(--ov-edge);transition:background .2s;min-width:0;}
+.ov-stat:last-child{border-right:0;}.ov-stat:hover{background:var(--accent-soft,#3776ab10);}
+.ov-stat > small{font:600 .55rem/1.6 Consolas,monospace;color:var(--ov-muted);letter-spacing:.12em;}
+.ov-stat > strong{font-size:2rem;line-height:1;letter-spacing:-.06em;font-weight:750;}.ov-stat strong em{font-style:normal;font-size:.78rem;font-weight:500;color:var(--ov-muted);letter-spacing:0;}
+.ov-stat > span{font-size:.65rem;line-height:1.5;color:var(--ov-muted);}.ov-stat > span i{font-style:normal;color:var(--ov-blue);display:inline-block;transition:transform .18s;}.ov-stat:hover > span i{transform:translate(3px,-3px);}
+.ov-scene :is(button,select):focus-visible,.ov-stage:focus-visible{outline:3px solid var(--accent-stroke,#6498bd);outline-offset:3px;}
+.ov-scene.is-still *{animation-play-state:paused!important;}.ov-scene.is-still .ov-caret{opacity:1;}
+@keyframes ov-float{0%,100%{translate:0 -4px;}50%{translate:0 4px;}}
+@keyframes ov-beacon{0%,100%{box-shadow:0 0 0 4px #ffd3430c;}50%{box-shadow:0 0 0 7px #ffd34325;}}
+@keyframes ov-type{from{max-width:0;}to{max-width:22ch;}}
+@keyframes ov-blink{50%{opacity:0;}}
+@media(min-width:1100px){.ov-copy{padding:48px 0 35px 42px;}.ov-stage{min-height:440px;}.ov-stat{padding:25px 30px;}}
+@media(max-width:700px){.ov-copy{padding:32px 0 20px 24px;}#python-observatory h1{font-size:clamp(1.7rem,4.8vw,2.1rem)!important;}.ov-kicker{font-size:.54rem;letter-spacing:.08em;}.ov-stage{min-height:355px;}.ov-copy > p br{display:none;}.ov-copy > p{font-size:.78rem!important;}.ov-satellite-a{left:0;top:20%;}.ov-satellite-b{right:3%;bottom:22%;}.ov-satellite{padding:8px;gap:5px;}.ov-satellite small{font-size:.55rem;}.ov-glyph-b{display:none;}.ov-core{width:72px;height:72px;border-radius:23px;}.ov-core :is(svg,img){width:49px;height:49px;}.ov-stat{padding:20px 15px;}.ov-stat > span{font-size:.6rem;}.ov-bottom{padding-inline:23px;}.ov-signal,.ov-signal-picker{margin-inline:23px;}}
+@media(max-width:520px){.ov-scene{grid-template-columns:1fr;border-radius:24px;}.ov-copy{padding:29px 25px 0;}#python-observatory h1{font-size:2.15rem!important;margin:17px 0 12px!important;}.ov-copy > p{max-width:340px;}.ov-console{margin-top:16px;}.ov-inventory{margin-top:14px;}.ov-stage{min-height:310px;}.ov-stage .ov-core{width:79px;height:79px;}.ov-satellite-a{left:12%;top:19%;}.ov-satellite-b{right:12%;bottom:23%;}.ov-glyph-a{left:16%;top:8%;}.ov-glyph-c{right:12%;bottom:12%;}.ov-orbit-caption{bottom:15px;}.ov-bottom{gap:10px;justify-content:center;padding:0 18px 18px;}.ov-controls button,.ov-motion-controls button{min-height:44px;}.ov-motion-controls{width:100%;justify-content:center;}.ov-signal{margin-inline:20px;min-height:74px;}.ov-signal-picker{margin:0 20px 19px;flex-direction:column;align-items:flex-start;gap:7px;}.ov-signal-picker select{font-size:16px;min-height:44px;}.ov-metrics{grid-template-columns:repeat(2,minmax(0,1fr));}.ov-stat{padding:20px;}.ov-stat:nth-child(2){border-right:0;}.ov-stat:nth-child(-n+2){border-bottom:1px solid var(--ov-edge);}.ov-stat > span{font-size:.66rem;}}
+@media(prefers-reduced-motion:reduce){#python-observatory *,#python-observatory *::before,#python-observatory *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}.ov-type-line{max-width:22ch;}}
+@media(prefers-reduced-transparency:reduce){.ov-scene,.ov-core{background:var(--surface,#f9fbfd);backdrop-filter:none;}.ov-pointer-glow{display:none;}}
+</style>
+<script>__OV_SCRIPT__</script>
